@@ -3,7 +3,6 @@
 import { Filter, Search, X } from "lucide-react";
 import { DIFFICULTIES, TOPICS, type Difficulty } from "@/types/question";
 import { TopicChip } from "@/components/ui/TopicChip";
-import { DifficultyBadge } from "@/components/ui/DifficultyBadge";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -13,11 +12,29 @@ export interface FilterState {
   topics: string[];
 }
 
-/** Selected-state ring colour per difficulty (matches the badge colour). */
-const DIFFICULTY_RING: Record<Difficulty, string> = {
-  Easy: "ring-emerald-500",
-  Medium: "ring-amber-500",
-  Hard: "ring-rose-500"
+/**
+ * Difficulty filter chip styles.
+ * idle  → translucent tinted pill (matches the difficulty colour)
+ * active → solid, dark, saturated fill with white text
+ */
+const DIFFICULTY_STYLE: Record<
+  Difficulty,
+  { idle: string; active: string }
+> = {
+  Easy: {
+    idle: "bg-emerald-500/10 text-emerald-600 ring-emerald-500/30 dark:text-emerald-400",
+    active:
+      "bg-emerald-600 text-white ring-emerald-600 shadow-sm shadow-emerald-900/30"
+  },
+  Medium: {
+    idle: "bg-amber-500/10 text-amber-600 ring-amber-500/30 dark:text-amber-400",
+    active:
+      "bg-amber-600 text-white ring-amber-600 shadow-sm shadow-amber-900/30"
+  },
+  Hard: {
+    idle: "bg-rose-500/10 text-rose-600 ring-rose-500/30 dark:text-rose-400",
+    active: "bg-rose-700 text-white ring-rose-700 shadow-sm shadow-rose-900/40"
+  }
 };
 
 interface QuestionToolbarProps {
@@ -106,22 +123,25 @@ export function QuestionToolbar({
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Difficulty
             </p>
-            <div className="flex flex-wrap gap-2.5">
-              {DIFFICULTIES.map((d) => (
-                <button
-                  key={d}
-                  onClick={() => toggleDifficulty(d)}
-                  aria-pressed={filters.difficulties.includes(d)}
-                  className={cn(
-                    "rounded-full ring-offset-2 ring-offset-card transition-all duration-150",
-                    filters.difficulties.includes(d)
-                      ? cn("scale-105 ring-2", DIFFICULTY_RING[d])
-                      : "opacity-50 hover:opacity-100"
-                  )}
-                >
-                  <DifficultyBadge difficulty={d} />
-                </button>
-              ))}
+            <div className="flex flex-wrap gap-2">
+              {DIFFICULTIES.map((d) => {
+                const active = filters.difficulties.includes(d);
+                return (
+                  <button
+                    key={d}
+                    onClick={() => toggleDifficulty(d)}
+                    aria-pressed={active}
+                    className={cn(
+                      "rounded-full px-3.5 py-1 text-xs font-semibold ring-1 ring-inset transition-all duration-150",
+                      active
+                        ? DIFFICULTY_STYLE[d].active
+                        : cn(DIFFICULTY_STYLE[d].idle, "hover:brightness-110")
+                    )}
+                  >
+                    {d}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
