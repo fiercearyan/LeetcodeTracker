@@ -13,12 +13,13 @@ export const questionSchema = z.object({
     .max(200, "Question name is too long"),
   difficulty: z.enum(DIFFICULTIES as [string, ...string[]]),
   topics: z.array(z.string().trim().min(1)).default([]),
+  // Optional — may be empty (problems sourced from sites without a stable URL).
   leetcodeUrl: z
     .string()
     .trim()
-    .url("Please enter a valid URL")
-    .refine((url) => /^https?:\/\//i.test(url), {
-      message: "URL must start with http:// or https://"
+    .default("")
+    .refine((url) => url === "" || /^https?:\/\/.+/i.test(url), {
+      message: "Enter a valid URL (http:// or https://) or leave it empty"
     }),
   approach: z.string().default("")
 });

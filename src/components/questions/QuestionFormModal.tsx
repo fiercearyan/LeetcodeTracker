@@ -27,17 +27,28 @@ const EMPTY: QuestionInput = {
 
 const APPROACH_TEMPLATE = `## Problem Intuition
 
+
 ## Algorithm
+1.
+
+\`\`\`python
+# your code here
+\`\`\`
 
 ## Complexity
-- Time:
-- Space:
+| Metric | Value |
+| --- | --- |
+| Time | O() |
+| Space | O() |
 
 ## Mistakes
+-
 
 ## Optimizations
 
+
 ## Notes
+>
 `;
 
 export function QuestionFormModal({
@@ -78,14 +89,13 @@ export function QuestionFormModal({
       next.questionNumber = "Enter a valid question number";
     if (!form.questionName.trim())
       next.questionName = "Question name is required";
-    if (!form.leetcodeUrl.trim()) {
-      next.leetcodeUrl = "LeetCode URL is required";
-    } else {
+    // URL is optional — only validate the format when something is entered.
+    if (form.leetcodeUrl.trim()) {
       try {
         const u = new URL(form.leetcodeUrl);
         if (!/^https?:$/.test(u.protocol)) throw new Error();
       } catch {
-        next.leetcodeUrl = "Enter a valid URL (https://…)";
+        next.leetcodeUrl = "Enter a valid URL (https://…) or leave it empty";
       }
     }
     setErrors(next);
@@ -165,12 +175,12 @@ export function QuestionFormModal({
               ))}
             </div>
           </Field>
-          <Field label="LeetCode URL" error={errors.leetcodeUrl}>
+          <Field label="Problem URL (optional)" error={errors.leetcodeUrl}>
             <input
               type="url"
               value={form.leetcodeUrl}
               onChange={(e) => set("leetcodeUrl", e.target.value)}
-              placeholder="https://leetcode.com/problems/two-sum/"
+              placeholder="https://… (leave blank if none)"
               className="input"
             />
           </Field>

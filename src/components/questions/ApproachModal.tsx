@@ -30,14 +30,16 @@ export function ApproachModal({
         {question.topics.map((t) => (
           <TopicChip key={t} label={t} />
         ))}
-        <a
-          href={question.leetcodeUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent"
-        >
-          Open Question <ExternalLink className="h-3.5 w-3.5" />
-        </a>
+        {question.leetcodeUrl && (
+          <a
+            href={question.leetcodeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent"
+          >
+            Open Question <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        )}
       </div>
 
       <MarkdownPreview content={question.approach} />

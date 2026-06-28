@@ -36,7 +36,7 @@ const QuestionSchema = new Schema<QuestionDocument>(
     },
     leetcodeUrl: {
       type: String,
-      required: [true, "LeetCode URL is required"],
+      default: "",
       trim: true
     },
     approach: {
