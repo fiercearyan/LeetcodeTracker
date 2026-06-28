@@ -2,10 +2,12 @@ import type { NextRequest } from "next/server";
 import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/mongoose";
 import { Pattern } from "@/models/Pattern";
+import { Question } from "@/models/Question";
 import { getAuthSession } from "@/lib/auth";
 import { patternUpdateSchema } from "@/lib/validation";
 import { ok, fail, unauthorized, notFound } from "@/lib/apiResponse";
 import { serializePattern } from "@/lib/serialize";
+import type { RelatedQuestion } from "@/types/pattern";
 
 interface RouteContext {
   params: { id: string };
@@ -36,7 +38,28 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
       { new: true }
     );
     if (!doc) return notFound("Pattern not found");
-    return ok(serializePattern(doc));
+
+    // Related questions are derived live from the Question collection.
+    const related = await Question.find({
+      createdBy: session.user.id,
+      patterns: doc._id
+    })
+      .select("questionNumber questionName difficulty")
+      .sort({ questionNumber: 1 })
+      .lean();
+
+    const relatedQuestions: RelatedQuestion[] = related.map((q) => ({
+      _id: String(q._id),
+      questionNumber: q.questionNumber as number,
+      questionName: q.questionName as string,
+      difficulty: q.difficulty as RelatedQuestion["difficulty"]
+    }));
+
+    return ok({
+      ...serializePattern(doc),
+      usageCount: relatedQuestions.length,
+      relatedQuestions
+    });
   } catch (error) {
     console.error("GET /api/patterns/:id failed", error);
     return fail("Failed to load pattern", 500);

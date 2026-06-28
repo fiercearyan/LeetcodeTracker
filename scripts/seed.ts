@@ -21,6 +21,7 @@ const QuestionSchema = new mongoose.Schema(
     topics: [String],
     leetcodeUrl: String,
     approach: String,
+    patterns: [{ type: mongoose.Schema.Types.ObjectId, ref: "Pattern" }],
     createdBy: String
   },
   { timestamps: true }
@@ -35,7 +36,11 @@ const PatternSchema = new mongoose.Schema(
     name: String,
     description: String,
     tags: [String],
+    triggerKeywords: [String],
     notes: String,
+    template: String,
+    mentalChecklist: [String],
+    complexities: [{ _id: false, operation: String, complexity: String }],
     views: { type: Number, default: 0 },
     createdBy: String
   },
@@ -160,23 +165,73 @@ DFS/BFS flood fill from each unvisited land cell.
 ## Complexity
 - Time: O(m * n)
 - Space: O(m * n)`
+  },
+  {
+    questionNumber: 215,
+    questionName: "Kth Largest Element in an Array",
+    difficulty: "Medium",
+    topics: ["Heap", "Sorting"],
+    leetcodeUrl:
+      "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+    approach: `## Problem Intuition
+Find the Kth largest element.
+
+## Algorithm
+Maintain a min-heap of size K; the root is the answer.
+
+## Complexity
+- Time: O(n log K)
+- Space: O(K)`
+  },
+  {
+    questionNumber: 347,
+    questionName: "Top K Frequent Elements",
+    difficulty: "Medium",
+    topics: ["Heap", "HashMap"],
+    leetcodeUrl: "https://leetcode.com/problems/top-k-frequent-elements/",
+    approach: `## Problem Intuition
+Return the K most frequent elements.
+
+## Algorithm
+Count frequencies, then keep a min-heap of size K by frequency.
+
+## Complexity
+- Time: O(n log K)
+- Space: O(n)`
   }
 ];
+
+/** Topic → pattern-name links used to auto-associate seed questions. */
+const TOPIC_TO_PATTERN: Record<string, string> = {
+  Heap: "Heap",
+  "Sliding Window": "Sliding Window"
+};
 
 const samplePatterns = [
   {
     name: "Heap",
     description: "Useful when solving Kth element and Top-K problems.",
     tags: ["Heap", "Priority Queue", "Top K"],
+    triggerKeywords: [
+      "Kth",
+      "Top K",
+      "Largest",
+      "Smallest",
+      "Closest",
+      "Median",
+      "Merge K",
+      "Running",
+      "Stream",
+      "Priority"
+    ],
     notes: `## When should I think about Heap?
 If the problem mentions:
 
-- Kth largest
-- Kth smallest
+- Kth largest / smallest
 - Top K frequent
 - Merge K sorted lists
-- Running Median
-- Continuously finding Min/Max
+- Running median
+- Continuously finding min/max
 - Closest K elements
 
 A heap is often one of the best approaches.
@@ -190,36 +245,66 @@ A heap is often one of the best approaches.
 | Top K Frequent | Min Heap + Frequency Map |
 | Merge K Sorted Lists | Min Heap |
 | Running Median | Two Heaps |
-| K Closest Elements | Max Heap of size K |
+| K Closest Elements | Max Heap of size K |`,
+    template: `\`\`\`java
+PriorityQueue<int[]> pq =
+    new PriorityQueue<>((a, b) -> a[1] - b[1]); // min-heap by freq
+for (int[] e : entries) {
+    pq.offer(e);
+    if (pq.size() > k) pq.poll();
+}
+\`\`\`
 
-## Common Time Complexities
+\`\`\`python
+import heapq
+heap = []
+for val, freq in entries:
+    heapq.heappush(heap, (freq, val))
+    if len(heap) > k:
+        heapq.heappop(heap)
+\`\`\`
 
-| Operation | Complexity |
-| --- | --- |
-| Insert | O(log K) |
-| Delete | O(log K) |
-| Peek | O(1) |
-| Build Heap | O(N) |
-
-## Interview Checklist
-- [ ] Spot "Kth / Top / Closest / Merge K / Running Median"
-- [ ] Decide Min vs Max heap
-- [ ] Bound the heap size to K when possible
-
-## Interview Reminder
-> Whenever you see "Kth", "Top", "Largest", "Smallest", "Closest", "Merge K" or "Running Median", pause and ask: can this be solved efficiently using a Heap?`
+\`\`\`cpp
+priority_queue<pair<int,int>,
+    vector<pair<int,int>>, greater<>> pq;
+for (auto& e : entries) {
+    pq.push(e);
+    if (pq.size() > k) pq.pop();
+}
+\`\`\``,
+    mentalChecklist: [
+      "Is K much smaller than N?",
+      "Do I only need the Top K elements?",
+      "Can I avoid sorting everything?",
+      "Is maintaining K elements enough?",
+      "Does a streaming solution exist?",
+      "Can I process elements one-by-one?"
+    ],
+    complexities: [
+      { operation: "Insert", complexity: "O(log n)" },
+      { operation: "Delete", complexity: "O(log n)" },
+      { operation: "Peek", complexity: "O(1)" },
+      { operation: "Build Heap", complexity: "O(n)" }
+    ]
   },
   {
     name: "Sliding Window",
     description: "Contiguous subarray / substring problems with a moving range.",
     tags: ["Sliding Window", "Two Pointers", "String"],
+    triggerKeywords: [
+      "Subarray",
+      "Substring",
+      "Contiguous",
+      "At most K",
+      "Longest",
+      "Shortest",
+      "Window"
+    ],
     notes: `## When to use
 - Longest / shortest substring with a constraint
 - Max / min sum of a fixed-size window
-- "At most K" / "exactly K" counting
-
-## Template
-\`\`\`python
+- "At most K" / "exactly K" counting`,
+    template: `\`\`\`python
 left = 0
 for right in range(len(s)):
     # expand with s[right]
@@ -227,10 +312,16 @@ for right in range(len(s)):
         # shrink from left
         left += 1
     # update answer
-\`\`\`
-
-## Reminder
-> If it says "contiguous" and "subarray/substring", think Sliding Window before brute force.`
+\`\`\``,
+    mentalChecklist: [
+      "Is the structure contiguous?",
+      "Does expanding/shrinking a window preserve validity?",
+      "Can I track the window state in O(1)?"
+    ],
+    complexities: [
+      { operation: "Expand", complexity: "O(1) amortised" },
+      { operation: "Total", complexity: "O(n)" }
+    ]
   }
 ];
 
@@ -241,19 +332,7 @@ async function main() {
   await mongoose.connect(uri);
   console.log("Connected to MongoDB");
 
-  const docs = sample.map((q) => ({ ...q, createdBy: userId }));
-
-  let inserted = 0;
-  for (const doc of docs) {
-    await Question.updateOne(
-      { createdBy: userId, questionNumber: doc.questionNumber },
-      { $set: doc },
-      { upsert: true }
-    );
-    inserted += 1;
-  }
-  console.log(`Seeded ${inserted} questions for user "${userId}".`);
-
+  // Patterns first, so questions can reference their ids.
   let patternsInserted = 0;
   for (const p of samplePatterns) {
     await Pattern.updateOne(
@@ -264,6 +343,31 @@ async function main() {
     patternsInserted += 1;
   }
   console.log(`Seeded ${patternsInserted} patterns for user "${userId}".`);
+
+  // Build a name → id map for auto-linking.
+  const patternDocs = (await Pattern.find({ createdBy: userId })
+    .select("name")
+    .lean()) as unknown as { _id: unknown; name: string }[];
+  const patternIdByName = new Map(
+    patternDocs.map((p) => [p.name, p._id] as [string, unknown])
+  );
+
+  let inserted = 0;
+  for (const q of sample) {
+    const patternIds = q.topics
+      .map((t) => TOPIC_TO_PATTERN[t])
+      .filter(Boolean)
+      .map((name) => patternIdByName.get(name))
+      .filter(Boolean);
+
+    await Question.updateOne(
+      { createdBy: userId, questionNumber: q.questionNumber },
+      { $set: { ...q, patterns: patternIds, createdBy: userId } },
+      { upsert: true }
+    );
+    inserted += 1;
+  }
+  console.log(`Seeded ${inserted} questions for user "${userId}".`);
 
   await mongoose.disconnect();
   console.log("Done.");

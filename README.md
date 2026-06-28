@@ -21,11 +21,13 @@ A production-quality web app to track LeetCode problems, approaches and notes �
 - **Filters** by difficulty and multiple topics. **Pagination** at 10 / 25 / 50 / 100 rows.
 - **Theme** — beautiful dark mode by default, light mode toggle, glassmorphism cards, rounded corners, subtle shadows.
 - **UX polish** — framer-motion animations, skeleton loading, toast notifications, optimistic delete, full error handling.
-- **Pattern Library** — a "second brain" for reusable DSA heuristics and interview patterns, separate from per-question notes.
-  - Responsive card grid (4 / 2 / 1 per row on desktop / tablet / mobile) with hover animations.
-  - Read-only **side drawer** rendering full Markdown notes (headings, lists, tables, **checklists**, code blocks, inline code, blockquotes).
-  - Add/Edit modal with the same Markdown editor, multi-select tags (custom tags allowed, keyboard navigable).
-  - Search across name / tags / description / notes; filter by tag; sort by Alphabetical, Recently Updated, Recently Created, Most Viewed.
+- **Pattern Library** — a "second brain" for reusable DSA heuristics and interview patterns, tightly integrated with the Question Tracker.
+  - Responsive card grid (4 / 2 / 1 per row on desktop / tablet / mobile) with hover animations; each card shows top trigger keywords and a live "Used in N questions" badge.
+  - Read-only **side drawer** with: clickable **Trigger Keywords** (click to find patterns with that keyword), a multi-language **Template** with syntax-highlighted tabs (Java / Python / Go / JavaScript / C++), an interactive **Mental Checklist**, a documentation-style **Complexity** card (right on desktop, below on mobile), full Markdown **Notes**, and a **Related Questions** list.
+  - **Auto-linking** — associate patterns when adding/editing a question; each pattern's Related Questions and usage count are then derived *live* from the Question collection (no manual maintenance, no duplicated counts).
+  - Clicking a related question deep-links into the Question Tracker and opens it.
+  - Add/Edit modal: tags, trigger-keyword chip input (Enter / comma / paste), Markdown notes + template editors, mental-checklist and complexity-row editors.
+  - Search across name / tags / description / notes / trigger keywords; filter by tag; sort by Alphabetical, Recently Updated, Recently Created, Most Viewed.
 - **Responsive** across desktop, tablet and mobile.
 
 ---

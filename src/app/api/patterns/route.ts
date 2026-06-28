@@ -1,13 +1,15 @@
 import type { NextRequest } from "next/server";
 import { connectToDatabase } from "@/lib/mongoose";
 import { Pattern } from "@/models/Pattern";
+import { Question } from "@/models/Question";
 import { getAuthSession } from "@/lib/auth";
 import { patternSchema } from "@/lib/validation";
 import { ok, fail, unauthorized } from "@/lib/apiResponse";
 import { serializePattern } from "@/lib/serialize";
 
 /**
- * GET /api/patterns — list the authenticated user's patterns.
+ * GET /api/patterns — list the authenticated user's patterns, each annotated
+ * with a `usageCount` computed dynamically from the Question collection.
  */
 export async function GET() {
   const session = await getAuthSession();
@@ -18,7 +20,20 @@ export async function GET() {
     const docs = await Pattern.find({ createdBy: session.user.id }).sort({
       updatedAt: -1
     });
-    return ok(docs.map(serializePattern));
+
+    // One aggregation gives the question count per pattern for this user.
+    const counts = await Question.aggregate<{ _id: unknown; count: number }>([
+      { $match: { createdBy: session.user.id } },
+      { $unwind: "$patterns" },
+      { $group: { _id: "$patterns", count: { $sum: 1 } } }
+    ]);
+    const countMap = new Map(counts.map((c) => [String(c._id), c.count]));
+
+    const data = docs.map((doc) => ({
+      ...serializePattern(doc),
+      usageCount: countMap.get(String(doc._id)) ?? 0
+    }));
+    return ok(data);
   } catch (error) {
     console.error("GET /api/patterns failed", error);
     return fail("Failed to load patterns", 500);

@@ -32,6 +32,8 @@ export interface Question {
   topics: string[];
   leetcodeUrl: string;
   approach: string;
+  /** Pattern ObjectIds this question is associated with. */
+  patterns: string[];
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -44,6 +46,7 @@ export type QuestionInput = {
   topics: string[];
   leetcodeUrl: string;
   approach: string;
+  patterns: string[];
 };
 
 export type SortKey =

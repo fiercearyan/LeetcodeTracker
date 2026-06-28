@@ -21,7 +21,11 @@ export const questionSchema = z.object({
     .refine((url) => url === "" || /^https?:\/\/.+/i.test(url), {
       message: "Enter a valid URL (http:// or https://) or leave it empty"
     }),
-  approach: z.string().default("")
+  approach: z.string().default(""),
+  // Pattern ObjectId references (24-char hex).
+  patterns: z
+    .array(z.string().regex(/^[a-f\d]{24}$/i, "Invalid pattern id"))
+    .default([])
 });
 
 export type QuestionSchemaInput = z.infer<typeof questionSchema>;
@@ -45,7 +49,18 @@ export const patternSchema = z.object({
     .max(280, "Description is too long")
     .default(""),
   tags: z.array(z.string().trim().min(1)).default([]),
-  notes: z.string().default("")
+  triggerKeywords: z.array(z.string().trim().min(1)).default([]),
+  notes: z.string().default(""),
+  template: z.string().default(""),
+  mentalChecklist: z.array(z.string().trim().min(1)).default([]),
+  complexities: z
+    .array(
+      z.object({
+        operation: z.string().trim().default(""),
+        complexity: z.string().trim().default("")
+      })
+    )
+    .default([])
 });
 
 export type PatternSchemaInput = z.infer<typeof patternSchema>;

@@ -4,7 +4,11 @@ export interface PatternDocument extends mongoose.Document {
   name: string;
   description: string;
   tags: string[];
+  triggerKeywords: string[];
   notes: string;
+  template: string;
+  mentalChecklist: string[];
+  complexities: { operation: string; complexity: string }[];
   views: number;
   createdBy: string;
   createdAt: Date;
@@ -27,9 +31,31 @@ const PatternSchema = new Schema<PatternDocument>(
       type: [String],
       default: []
     },
+    triggerKeywords: {
+      type: [String],
+      default: []
+    },
     notes: {
       type: String,
       default: ""
+    },
+    template: {
+      type: String,
+      default: ""
+    },
+    mentalChecklist: {
+      type: [String],
+      default: []
+    },
+    complexities: {
+      type: [
+        {
+          _id: false,
+          operation: { type: String, default: "" },
+          complexity: { type: String, default: "" }
+        }
+      ],
+      default: []
     },
     // Supports the "Most Viewed" sort and a future "Used in X" style badge.
     views: {

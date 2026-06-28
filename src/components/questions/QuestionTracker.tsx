@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ListChecks, Plus, SearchX } from "lucide-react";
 import { useQuestions } from "@/hooks/useQuestions";
+import { patternService } from "@/services/patternService";
 import { QuestionToolbar, type FilterState } from "@/components/questions/QuestionToolbar";
 import { QuestionTable } from "@/components/questions/QuestionTable";
 import { Pagination } from "@/components/questions/Pagination";
@@ -11,6 +12,7 @@ import { QuestionFormModal } from "@/components/questions/QuestionFormModal";
 import { ApproachModal } from "@/components/questions/ApproachModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { TableSkeleton } from "@/components/ui/TableSkeleton";
+import type { PatternOption } from "@/components/questions/PatternPicker";
 import type { Question, QuestionInput, SortKey, SortOrder } from "@/types/question";
 
 const DIFFICULTY_RANK: Record<string, number> = {
@@ -38,10 +40,40 @@ export function QuestionTracker() {
   const [viewing, setViewing] = useState<Question | null>(null);
   const [deleting, setDeleting] = useState<Question | null>(null);
 
+  // Patterns (for the picker + chips). Loaded once.
+  const [patternOptions, setPatternOptions] = useState<PatternOption[]>([]);
+  useEffect(() => {
+    patternService
+      .list()
+      .then((ps) => setPatternOptions(ps.map((p) => ({ _id: p._id, name: p.name }))))
+      .catch(() => setPatternOptions([]));
+  }, []);
+
+  const patternNameById = useMemo(
+    () => new Map(patternOptions.map((p) => [p._id, p.name])),
+    [patternOptions]
+  );
+
   const availableTopics = useMemo(
     () => Array.from(new Set(questions.flatMap((q) => q.topics))),
     [questions]
   );
+
+  // Deep link: /dashboard/questions?view=<questionId> opens that question.
+  useEffect(() => {
+    if (loading || questions.length === 0 || typeof window === "undefined")
+      return;
+    const params = new URLSearchParams(window.location.search);
+    const viewId = params.get("view");
+    if (!viewId) return;
+    const target = questions.find((q) => q._id === viewId);
+    if (target) {
+      setViewing(target);
+      // Clean the URL so a refresh doesn't re-open it.
+      window.history.replaceState(null, "", "/dashboard/questions");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, questions]);
 
   const filtered = useMemo(() => {
     const term = filters.search.trim().toLowerCase();
@@ -177,6 +209,7 @@ export function QuestionTracker() {
             onView={setViewing}
             onEdit={openEdit}
             onDelete={setDeleting}
+            patternNameById={patternNameById}
           />
           <Pagination
             page={safePage}
@@ -196,6 +229,7 @@ export function QuestionTracker() {
         onClose={() => setFormOpen(false)}
         initial={editing}
         onSubmit={handleSubmit}
+        patternOptions={patternOptions}
       />
 
       <ApproachModal

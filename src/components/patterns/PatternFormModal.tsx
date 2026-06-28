@@ -5,7 +5,9 @@ import { Loader2, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import { Modal } from "@/components/ui/Modal";
 import { TagSelect } from "@/components/ui/TagSelect";
+import { ChipInput } from "@/components/ui/ChipInput";
 import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
+import { ComplexityEditor } from "@/components/patterns/ComplexityEditor";
 import { PATTERN_TAGS, type Pattern, type PatternInput } from "@/types/pattern";
 
 interface PatternFormModalProps {
@@ -19,7 +21,11 @@ const EMPTY: PatternInput = {
   name: "",
   description: "",
   tags: [],
-  notes: ""
+  triggerKeywords: [],
+  notes: "",
+  template: "",
+  mentalChecklist: [],
+  complexities: []
 };
 
 const NOTES_TEMPLATE = `## When should I think about this pattern?
@@ -31,14 +37,43 @@ If the problem mentions:
 | --- | --- |
 |  |  |
 
-## Checklist
-- [ ] Identify the trigger keywords
-- [ ] Confirm constraints fit
-- [ ] Recall the template
-
 ## Interview Reminder
 > Pause and ask: can this be solved with this pattern?
 `;
+
+const TEMPLATE_PLACEHOLDER = `Add reusable code, one fenced block per language for tabs:
+
+\`\`\`python
+# python template
+\`\`\`
+
+\`\`\`java
+// java template
+\`\`\``;
+
+function Field({
+  label,
+  hint,
+  children
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-sm font-medium">
+        {label}
+        {hint && (
+          <span className="ml-2 text-xs font-normal text-muted-foreground">
+            {hint}
+          </span>
+        )}
+      </label>
+      {children}
+    </div>
+  );
+}
 
 export function PatternFormModal({
   open,
@@ -48,6 +83,7 @@ export function PatternFormModal({
 }: PatternFormModalProps) {
   const isEdit = Boolean(initial);
   const [form, setForm] = useState<PatternInput>(EMPTY);
+  const [checklistText, setChecklistText] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
@@ -59,10 +95,16 @@ export function PatternFormModal({
           name: initial.name,
           description: initial.description,
           tags: initial.tags,
-          notes: initial.notes
+          triggerKeywords: initial.triggerKeywords,
+          notes: initial.notes,
+          template: initial.template,
+          mentalChecklist: initial.mentalChecklist,
+          complexities: initial.complexities
         });
+        setChecklistText(initial.mentalChecklist.join("\n"));
       } else {
         setForm({ ...EMPTY, notes: NOTES_TEMPLATE });
+        setChecklistText("");
       }
     }
   }, [open, initial]);
@@ -81,10 +123,18 @@ export function PatternFormModal({
     if (!validate()) return;
     setSaving(true);
     try {
+      const mentalChecklist = checklistText
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean);
       await onSubmit({
         ...form,
         name: form.name.trim(),
-        description: form.description.trim()
+        description: form.description.trim(),
+        mentalChecklist,
+        complexities: form.complexities.filter(
+          (c) => c.operation.trim() || c.complexity.trim()
+        )
       });
       onClose();
     } catch (err) {
@@ -107,10 +157,7 @@ export function PatternFormModal({
       size="max-w-3xl"
     >
       <div className="space-y-5">
-        <div>
-          <label className="mb-1.5 block text-sm font-medium">
-            Pattern Name
-          </label>
+        <Field label="Pattern Name">
           <input
             type="text"
             value={form.name}
@@ -121,12 +168,9 @@ export function PatternFormModal({
           {errors.name && (
             <p className="mt-1 text-xs text-rose-500">{errors.name}</p>
           )}
-        </div>
+        </Field>
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium">
-            Short Description
-          </label>
+        <Field label="Short Description">
           <input
             type="text"
             value={form.description}
@@ -134,26 +178,67 @@ export function PatternFormModal({
             placeholder="Kth element, Top K, Merge sorted lists…"
             className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-ring"
           />
-        </div>
+        </Field>
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium">Tags</label>
+        <Field label="Tags">
           <TagSelect
             value={form.tags}
             onChange={(t) => set("tags", t)}
             suggestions={PATTERN_TAGS}
             placeholder="Add tags…"
           />
-        </div>
+        </Field>
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium">Notes</label>
+        <Field
+          label="Trigger Keywords"
+          hint="Enter or comma to add — words that should make this pattern come to mind"
+        >
+          <ChipInput
+            value={form.triggerKeywords}
+            onChange={(k) => set("triggerKeywords", k)}
+            placeholder="Kth, Top K, Median…"
+          />
+        </Field>
+
+        <Field label="Notes">
           <MarkdownEditor
             value={form.notes}
             onChange={(v) => set("notes", v)}
             placeholder="Write your reusable insight in Markdown…"
           />
-        </div>
+        </Field>
+
+        <Field
+          label="Template"
+          hint="Optional — one fenced code block per language creates tabs"
+        >
+          <MarkdownEditor
+            value={form.template}
+            onChange={(v) => set("template", v)}
+            placeholder={TEMPLATE_PLACEHOLDER}
+            minRows={8}
+          />
+        </Field>
+
+        <Field
+          label="Mental Checklist"
+          hint="One question per line — things to ask yourself before choosing this pattern"
+        >
+          <textarea
+            value={checklistText}
+            onChange={(e) => setChecklistText(e.target.value)}
+            rows={5}
+            placeholder={"Is K much smaller than N?\nDo I only need Top K elements?\nCan I avoid sorting everything?"}
+            className="w-full resize-y rounded-xl border border-input bg-background px-3 py-2.5 text-sm leading-relaxed outline-none transition-colors focus:border-ring"
+          />
+        </Field>
+
+        <Field label="Complexities">
+          <ComplexityEditor
+            value={form.complexities}
+            onChange={(c) => set("complexities", c)}
+          />
+        </Field>
 
         <div className="flex justify-end gap-3 pt-1">
           <button

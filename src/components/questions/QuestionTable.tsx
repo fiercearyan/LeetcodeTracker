@@ -23,6 +23,8 @@ interface QuestionTableProps {
   onView: (q: Question) => void;
   onEdit: (q: Question) => void;
   onDelete: (q: Question) => void;
+  /** Maps pattern id → name for the Patterns column chips. */
+  patternNameById: Map<string, string>;
 }
 
 interface Column {
@@ -36,6 +38,7 @@ const COLUMNS: Column[] = [
   { key: "questionName", label: "Question" },
   { key: "difficulty", label: "Difficulty", className: "hidden sm:table-cell w-32" },
   { key: null, label: "Topics", className: "hidden md:table-cell" },
+  { key: null, label: "Patterns", className: "hidden xl:table-cell" },
   { key: null, label: "Approach", className: "w-24" },
   { key: null, label: "Link", className: "hidden sm:table-cell w-28" },
   { key: null, label: "Actions", className: "hidden sm:table-cell w-28 text-right" }
@@ -48,7 +51,8 @@ export function QuestionTable({
   onSort,
   onView,
   onEdit,
-  onDelete
+  onDelete,
+  patternNameById
 }: QuestionTableProps) {
   return (
     <div className="glass-card overflow-hidden">
@@ -119,6 +123,27 @@ export function QuestionTable({
                         </span>
                       )}
                     </div>
+                  </td>
+                  <td className="hidden px-4 py-3 xl:table-cell">
+                    {q.patterns.length === 0 ? (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    ) : (
+                      <div className="flex max-w-xs flex-wrap gap-1">
+                        {q.patterns.slice(0, 2).map((id) => (
+                          <span
+                            key={id}
+                            className="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+                          >
+                            {patternNameById.get(id) ?? "Pattern"}
+                          </span>
+                        ))}
+                        {q.patterns.length > 2 && (
+                          <span className="text-xs text-muted-foreground">
+                            +{q.patterns.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <button

@@ -8,6 +8,7 @@ export interface QuestionDocument extends mongoose.Document {
   topics: string[];
   leetcodeUrl: string;
   approach: string;
+  patterns: mongoose.Types.ObjectId[];
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -42,6 +43,12 @@ const QuestionSchema = new Schema<QuestionDocument>(
     approach: {
       type: String,
       default: ""
+    },
+    // Associated patterns (auto-links this question into each Pattern's
+    // "Related Questions"). Stored as references to the Pattern collection.
+    patterns: {
+      type: [{ type: Schema.Types.ObjectId, ref: "Pattern" }],
+      default: []
     },
     createdBy: {
       type: String,

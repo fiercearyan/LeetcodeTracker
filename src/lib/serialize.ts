@@ -15,6 +15,7 @@ export function serializeQuestion(doc: QuestionDocument): Question {
     topics: doc.topics ?? [],
     leetcodeUrl: doc.leetcodeUrl,
     approach: doc.approach ?? "",
+    patterns: (doc.patterns ?? []).map((p) => String(p)),
     createdBy: doc.createdBy,
     createdAt: doc.createdAt.toISOString(),
     updatedAt: doc.updatedAt.toISOString()
@@ -27,7 +28,14 @@ export function serializePattern(doc: PatternDocument): Pattern {
     name: doc.name,
     description: doc.description ?? "",
     tags: doc.tags ?? [],
+    triggerKeywords: doc.triggerKeywords ?? [],
     notes: doc.notes ?? "",
+    template: doc.template ?? "",
+    mentalChecklist: doc.mentalChecklist ?? [],
+    complexities: (doc.complexities ?? []).map((c) => ({
+      operation: c.operation ?? "",
+      complexity: c.complexity ?? ""
+    })),
     views: doc.views ?? 0,
     createdBy: doc.createdBy,
     createdAt: doc.createdAt.toISOString(),

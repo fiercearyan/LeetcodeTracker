@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Pencil, Trash2 } from "lucide-react";
+import { Link2, Pencil, Trash2, Zap } from "lucide-react";
 import { TopicChip } from "@/components/ui/TopicChip";
 import { timeAgo } from "@/lib/utils";
 import type { Pattern } from "@/types/pattern";
@@ -40,6 +40,20 @@ export function PatternCard({
         {pattern.description || "No description yet."}
       </p>
 
+      {pattern.triggerKeywords.length > 0 && (
+        <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Zap className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+          <span className="truncate">
+            {pattern.triggerKeywords.slice(0, 3).join(" • ")}
+          </span>
+          {pattern.triggerKeywords.length > 3 && (
+            <span className="shrink-0">
+              +{pattern.triggerKeywords.length - 3}
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="mt-3 flex flex-wrap gap-1.5">
         {pattern.tags.slice(0, 4).map((t) => (
           <TopicChip key={t} label={t} />
@@ -49,6 +63,14 @@ export function PatternCard({
             +{pattern.tags.length - 4}
           </span>
         )}
+      </div>
+
+      <div className="mt-3">
+        <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+          <Link2 className="h-3.5 w-3.5" />
+          Used in {pattern.usageCount ?? 0} question
+          {(pattern.usageCount ?? 0) === 1 ? "" : "s"}
+        </span>
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">

@@ -5,6 +5,7 @@ import { Loader2, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import { Modal } from "@/components/ui/Modal";
 import { TopicMultiSelect } from "@/components/ui/TopicMultiSelect";
+import { PatternPicker, type PatternOption } from "@/components/questions/PatternPicker";
 import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
 import { DIFFICULTIES, type Difficulty, type Question, type QuestionInput } from "@/types/question";
 
@@ -14,6 +15,8 @@ interface QuestionFormModalProps {
   /** When provided, the modal is in edit mode. */
   initial?: Question | null;
   onSubmit: (payload: QuestionInput) => Promise<unknown>;
+  /** Available patterns to associate with this question. */
+  patternOptions: PatternOption[];
 }
 
 const EMPTY: QuestionInput = {
@@ -22,7 +25,8 @@ const EMPTY: QuestionInput = {
   difficulty: "Easy",
   topics: [],
   leetcodeUrl: "",
-  approach: ""
+  approach: "",
+  patterns: []
 };
 
 const APPROACH_TEMPLATE = `## Problem Intuition
@@ -55,7 +59,8 @@ export function QuestionFormModal({
   open,
   onClose,
   initial,
-  onSubmit
+  onSubmit,
+  patternOptions
 }: QuestionFormModalProps) {
   const isEdit = Boolean(initial);
   const [form, setForm] = useState<QuestionInput>(EMPTY);
@@ -72,7 +77,8 @@ export function QuestionFormModal({
           difficulty: initial.difficulty,
           topics: initial.topics,
           leetcodeUrl: initial.leetcodeUrl,
-          approach: initial.approach
+          approach: initial.approach,
+          patterns: initial.patterns ?? []
         });
       } else {
         setForm({ ...EMPTY, approach: APPROACH_TEMPLATE });
@@ -190,6 +196,14 @@ export function QuestionFormModal({
           <TopicMultiSelect
             value={form.topics}
             onChange={(t) => set("topics", t)}
+          />
+        </Field>
+
+        <Field label="Patterns">
+          <PatternPicker
+            value={form.patterns}
+            onChange={(p) => set("patterns", p)}
+            options={patternOptions}
           />
         </Field>
 

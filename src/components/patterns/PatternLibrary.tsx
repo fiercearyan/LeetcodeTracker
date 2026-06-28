@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { BrainCircuit, Plus, SearchX } from "lucide-react";
+import { patternService } from "@/services/patternService";
 import { usePatterns } from "@/hooks/usePatterns";
 import { PatternCard } from "@/components/patterns/PatternCard";
 import { PatternFormModal } from "@/components/patterns/PatternFormModal";
@@ -15,6 +17,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import type { Pattern, PatternInput } from "@/types/pattern";
 
 export function PatternLibrary() {
+  const router = useRouter();
   const { patterns, loading, create, update, remove, registerView } =
     usePatterns();
 
@@ -27,6 +30,7 @@ export function PatternLibrary() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Pattern | null>(null);
   const [viewing, setViewing] = useState<Pattern | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
   const [deleting, setDeleting] = useState<Pattern | null>(null);
 
   const availableTags = useMemo(
@@ -42,7 +46,8 @@ export function PatternLibrary() {
         p.name.toLowerCase().includes(term) ||
         p.description.toLowerCase().includes(term) ||
         p.notes.toLowerCase().includes(term) ||
-        p.tags.some((t) => t.toLowerCase().includes(term));
+        p.tags.some((t) => t.toLowerCase().includes(term)) ||
+        p.triggerKeywords.some((k) => k.toLowerCase().includes(term));
       const matchesTags =
         filters.tags.length === 0 ||
         filters.tags.every((t) => p.tags.includes(t));
@@ -74,9 +79,28 @@ export function PatternLibrary() {
     setEditing(p);
     setFormOpen(true);
   };
-  const openView = (p: Pattern) => {
+  const openView = async (p: Pattern) => {
     registerView(p._id);
     setViewing(p);
+    setViewLoading(true);
+    try {
+      // Fetch the full detail (related questions + live usage count).
+      const detail = await patternService.get(p._id);
+      setViewing((cur) => (cur && cur._id === detail._id ? detail : cur));
+    } catch {
+      /* keep the basic view */
+    } finally {
+      setViewLoading(false);
+    }
+  };
+
+  const handleKeywordSearch = (keyword: string) => {
+    setViewing(null);
+    setFilters((f) => ({ ...f, search: keyword }));
+  };
+
+  const openQuestion = (questionId: string) => {
+    router.push(`/dashboard/questions?view=${questionId}`);
   };
 
   const handleSubmit = async (payload: PatternInput) => {
@@ -144,11 +168,14 @@ export function PatternLibrary() {
       <PatternViewDrawer
         open={Boolean(viewing)}
         pattern={viewing}
+        relatedLoading={viewLoading}
         onClose={() => setViewing(null)}
         onEdit={(p) => {
           setViewing(null);
           openEdit(p);
         }}
+        onKeywordSearch={handleKeywordSearch}
+        onOpenQuestion={openQuestion}
       />
 
       <ConfirmDialog
