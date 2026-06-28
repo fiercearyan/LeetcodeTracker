@@ -43,12 +43,12 @@ If the problem mentions:
 
 const TEMPLATE_PLACEHOLDER = `Add reusable code, one fenced block per language for tabs:
 
-\`\`\`python
-# python template
-\`\`\`
-
 \`\`\`java
 // java template
+\`\`\`
+
+\`\`\`python
+# python template
 \`\`\``;
 
 function Field({

@@ -108,7 +108,7 @@
   @apply my-3 border-l-4 border-primary/50 bg-muted/40 py-1 pl-4 italic text-muted-foreground;
 }
 .markdown-body code:not(pre code) {
-  @apply rounded bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground;
+  @apply rounded bg-orange-500/10 px-1.5 py-0.5 font-mono text-[0.85em] font-medium text-orange-600 dark:text-orange-400;
 }
 .markdown-body pre {
   @apply my-4 overflow-x-auto rounded-xl border border-border bg-[#0d1117] p-4 text-[0.85rem];
@@ -182,7 +182,8 @@
 .hljs-comment,
 .hljs-code,
 .hljs-formula {
-  color: #8b949e;
+  color: #6a9955;
+  font-style: italic;
 }
 .hljs-name,
 .hljs-quote,

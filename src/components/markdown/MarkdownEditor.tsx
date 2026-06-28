@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import {
   Bold,
   Italic,
+  Code,
   List,
   ListOrdered,
   Code2,
@@ -68,6 +69,36 @@ export function MarkdownEditor({
     requestAnimationFrame(() => el.focus());
   };
 
+  const wrapInlineCode = () =>
+    wrapSelection({ before: "`", after: "`", placeholder: "code" });
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const mod = e.metaKey || e.ctrlKey;
+    const key = e.key.toLowerCase();
+
+    if (mod && key === "e") {
+      e.preventDefault();
+      wrapInlineCode();
+      return;
+    }
+    if (mod && key === "b") {
+      e.preventDefault();
+      wrapSelection({ before: "**", after: "**", placeholder: "bold text" });
+      return;
+    }
+    if (mod && key === "i") {
+      e.preventDefault();
+      wrapSelection({ before: "_", after: "_", placeholder: "italic text" });
+      return;
+    }
+    // Typing a backtick with text selected wraps it as inline code.
+    const el = textareaRef.current;
+    if (e.key === "`" && el && el.selectionStart !== el.selectionEnd) {
+      e.preventDefault();
+      wrapInlineCode();
+    }
+  };
+
   const insertRaw = (snippet: string) => {
     const el = textareaRef.current;
     if (!el) return;
@@ -91,6 +122,12 @@ export function MarkdownEditor({
         wrapSelection({ before: "_", after: "_", placeholder: "italic text" })
     },
     {
+      icon: Code,
+      label: "Inline code (⌘/Ctrl+E or `)",
+      action: () =>
+        wrapSelection({ before: "`", after: "`", placeholder: "code" })
+    },
+    {
       icon: List,
       label: "Bullet list",
       action: () => prefixLines("- ")
@@ -105,9 +142,9 @@ export function MarkdownEditor({
       label: "Code block",
       action: () =>
         wrapSelection({
-          before: "\n```python\n",
+          before: "\n```java\n",
           after: "\n```\n",
-          placeholder: "# your code"
+          placeholder: "// your code"
         })
     },
     {
@@ -172,6 +209,7 @@ export function MarkdownEditor({
           ref={textareaRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder={placeholder}
           rows={minRows}
           spellCheck={false}

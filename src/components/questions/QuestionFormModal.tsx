@@ -35,8 +35,8 @@ const APPROACH_TEMPLATE = `## Problem Intuition
 ## Algorithm
 1.
 
-\`\`\`python
-# your code here
+\`\`\`java
+// your code here
 \`\`\`
 
 ## Complexity
