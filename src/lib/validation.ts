@@ -30,3 +30,24 @@ export type QuestionSchemaInput = z.infer<typeof questionSchema>;
  * For updates we allow a partial payload but keep the same field-level rules.
  */
 export const questionUpdateSchema = questionSchema.partial();
+
+/* ----------------------------- Patterns ----------------------------- */
+
+export const patternSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Pattern name is required")
+    .max(120, "Pattern name is too long"),
+  description: z
+    .string()
+    .trim()
+    .max(280, "Description is too long")
+    .default(""),
+  tags: z.array(z.string().trim().min(1)).default([]),
+  notes: z.string().default("")
+});
+
+export type PatternSchemaInput = z.infer<typeof patternSchema>;
+
+export const patternUpdateSchema = patternSchema.partial();

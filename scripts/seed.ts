@@ -30,6 +30,22 @@ QuestionSchema.index({ createdBy: 1, questionNumber: 1 }, { unique: true });
 const Question =
   mongoose.models.Question || mongoose.model("Question", QuestionSchema);
 
+const PatternSchema = new mongoose.Schema(
+  {
+    name: String,
+    description: String,
+    tags: [String],
+    notes: String,
+    views: { type: Number, default: 0 },
+    createdBy: String
+  },
+  { timestamps: true }
+);
+PatternSchema.index({ createdBy: 1, name: 1 }, { unique: true });
+
+const Pattern =
+  mongoose.models.Pattern || mongoose.model("Pattern", PatternSchema);
+
 const userId = process.env.SEED_USER_ID || "seed-user";
 
 const sample = [
@@ -147,6 +163,77 @@ DFS/BFS flood fill from each unvisited land cell.
   }
 ];
 
+const samplePatterns = [
+  {
+    name: "Heap",
+    description: "Useful when solving Kth element and Top-K problems.",
+    tags: ["Heap", "Priority Queue", "Top K"],
+    notes: `## When should I think about Heap?
+If the problem mentions:
+
+- Kth largest
+- Kth smallest
+- Top K frequent
+- Merge K sorted lists
+- Running Median
+- Continuously finding Min/Max
+- Closest K elements
+
+A heap is often one of the best approaches.
+
+## Quick Decision Rules
+
+| Problem | Approach |
+| --- | --- |
+| Kth Largest | Min Heap of size K |
+| Kth Smallest | Max Heap of size K |
+| Top K Frequent | Min Heap + Frequency Map |
+| Merge K Sorted Lists | Min Heap |
+| Running Median | Two Heaps |
+| K Closest Elements | Max Heap of size K |
+
+## Common Time Complexities
+
+| Operation | Complexity |
+| --- | --- |
+| Insert | O(log K) |
+| Delete | O(log K) |
+| Peek | O(1) |
+| Build Heap | O(N) |
+
+## Interview Checklist
+- [ ] Spot "Kth / Top / Closest / Merge K / Running Median"
+- [ ] Decide Min vs Max heap
+- [ ] Bound the heap size to K when possible
+
+## Interview Reminder
+> Whenever you see "Kth", "Top", "Largest", "Smallest", "Closest", "Merge K" or "Running Median", pause and ask: can this be solved efficiently using a Heap?`
+  },
+  {
+    name: "Sliding Window",
+    description: "Contiguous subarray / substring problems with a moving range.",
+    tags: ["Sliding Window", "Two Pointers", "String"],
+    notes: `## When to use
+- Longest / shortest substring with a constraint
+- Max / min sum of a fixed-size window
+- "At most K" / "exactly K" counting
+
+## Template
+\`\`\`python
+left = 0
+for right in range(len(s)):
+    # expand with s[right]
+    while invalid():
+        # shrink from left
+        left += 1
+    # update answer
+\`\`\`
+
+## Reminder
+> If it says "contiguous" and "subarray/substring", think Sliding Window before brute force.`
+  }
+];
+
 async function main() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error("MONGODB_URI is not set");
@@ -165,8 +252,19 @@ async function main() {
     );
     inserted += 1;
   }
-
   console.log(`Seeded ${inserted} questions for user "${userId}".`);
+
+  let patternsInserted = 0;
+  for (const p of samplePatterns) {
+    await Pattern.updateOne(
+      { createdBy: userId, name: p.name },
+      { $set: { ...p, createdBy: userId } },
+      { upsert: true }
+    );
+    patternsInserted += 1;
+  }
+  console.log(`Seeded ${patternsInserted} patterns for user "${userId}".`);
+
   await mongoose.disconnect();
   console.log("Done.");
 }

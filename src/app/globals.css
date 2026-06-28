@@ -116,6 +116,17 @@
 .markdown-body pre code {
   @apply bg-transparent p-0 font-mono;
 }
+/* GFM task lists / checklists */
+.markdown-body ul:has(li.task-list-item),
+.markdown-body li.task-list-item {
+  @apply list-none;
+}
+.markdown-body li.task-list-item {
+  @apply -ml-5 flex items-start gap-2;
+}
+.markdown-body li.task-list-item input[type="checkbox"] {
+  @apply mt-1 h-4 w-4 shrink-0 accent-[hsl(var(--primary))];
+}
 .markdown-body table {
   @apply my-4 w-full border-collapse text-left text-sm;
 }
