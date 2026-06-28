@@ -202,6 +202,14 @@ export function QuestionTracker() {
         open={Boolean(viewing)}
         onClose={() => setViewing(null)}
         question={viewing}
+        onEdit={(q) => {
+          setViewing(null);
+          openEdit(q);
+        }}
+        onDelete={(q) => {
+          setViewing(null);
+          setDeleting(q);
+        }}
       />
 
       <ConfirmDialog

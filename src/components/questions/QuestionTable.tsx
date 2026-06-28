@@ -32,13 +32,13 @@ interface Column {
 }
 
 const COLUMNS: Column[] = [
-  { key: "questionNumber", label: "#", className: "w-16" },
+  { key: "questionNumber", label: "#", className: "w-12 sm:w-16" },
   { key: "questionName", label: "Question" },
-  { key: "difficulty", label: "Difficulty", className: "w-32" },
+  { key: "difficulty", label: "Difficulty", className: "hidden sm:table-cell w-32" },
   { key: null, label: "Topics", className: "hidden md:table-cell" },
   { key: null, label: "Approach", className: "w-24" },
   { key: null, label: "Link", className: "hidden sm:table-cell w-28" },
-  { key: null, label: "Actions", className: "w-28 text-right" }
+  { key: null, label: "Actions", className: "hidden sm:table-cell w-28 text-right" }
 ];
 
 export function QuestionTable({
@@ -96,11 +96,16 @@ export function QuestionTable({
                   </td>
                   <td className="px-4 py-3 font-medium">
                     {q.questionName}
+                    {/* On mobile the Difficulty column is hidden, so show the
+                        badge inline under the name. */}
+                    <span className="mt-1.5 flex flex-wrap items-center gap-1.5 sm:hidden">
+                      <DifficultyBadge difficulty={q.difficulty} />
+                    </span>
                     <span className="mt-1 block text-xs text-muted-foreground md:hidden">
                       {q.topics.join(", ")}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="hidden px-4 py-3 sm:table-cell">
                     <DifficultyBadge difficulty={q.difficulty} />
                   </td>
                   <td className="hidden px-4 py-3 md:table-cell">
@@ -137,7 +142,7 @@ export function QuestionTable({
                       <span className="text-xs text-muted-foreground">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="hidden px-4 py-3 sm:table-cell">
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => onEdit(q)}
