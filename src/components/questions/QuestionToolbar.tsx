@@ -13,6 +13,13 @@ export interface FilterState {
   topics: string[];
 }
 
+/** Selected-state ring colour per difficulty (matches the badge colour). */
+const DIFFICULTY_RING: Record<Difficulty, string> = {
+  Easy: "ring-emerald-500",
+  Medium: "ring-amber-500",
+  Hard: "ring-rose-500"
+};
+
 interface QuestionToolbarProps {
   filters: FilterState;
   onChange: (next: FilterState) => void;
@@ -99,21 +106,20 @@ export function QuestionToolbar({
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Difficulty
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {DIFFICULTIES.map((d) => (
                 <button
                   key={d}
                   onClick={() => toggleDifficulty(d)}
+                  aria-pressed={filters.difficulties.includes(d)}
                   className={cn(
-                    "rounded-lg ring-1 ring-inset transition-all",
+                    "rounded-full ring-offset-2 ring-offset-card transition-all duration-150",
                     filters.difficulties.includes(d)
-                      ? "ring-primary"
-                      : "opacity-60 ring-transparent hover:opacity-100"
+                      ? cn("scale-105 ring-2", DIFFICULTY_RING[d])
+                      : "opacity-50 hover:opacity-100"
                   )}
                 >
-                  <span className="block px-1 py-0.5">
-                    <DifficultyBadge difficulty={d} />
-                  </span>
+                  <DifficultyBadge difficulty={d} />
                 </button>
               ))}
             </div>
