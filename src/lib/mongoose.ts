@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { env } from "@/lib/env";
+import { assertEnv } from "@/lib/env";
 
 /**
  * Cached Mongoose connection.
@@ -32,7 +32,7 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
   }
 
   if (!cache.promise) {
-    cache.promise = mongoose.connect(env.MONGODB_URI, {
+    cache.promise = mongoose.connect(assertEnv("MONGODB_URI"), {
       bufferCommands: false
     });
   }
