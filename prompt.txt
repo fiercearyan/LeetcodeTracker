@@ -1,0 +1,389 @@
+﻿LeetCode Tracker – Full Stack Project Prompt
+Act as a senior Full Stack Engineer and build a production-quality web application called LeetCode Tracker.
+The application should be clean, modern, responsive, and follow best coding practices.
+________________
+
+
+Tech Stack
+Frontend , Backend - I have to deploy on vercel, you can decide what is most suitable and lightweight.
+Database
+* MongoDB
+Authentication
+* Google OAuth
+Theme
+* Dark / Light mode using next-themes or Context API
+________________
+
+
+Folder Structure
+Create a scalable folder structure.
+________________
+
+
+PHASE 1
+Create the following pages.
+________________
+
+
+Login Page
+Simple modern login page.
+Show
+LeetCode Tracker
+Button
+Continue with Google
+Authentication should be implemented using Google OAuth.
+Store JWT after login.
+________________
+
+
+Dashboard
+Sidebar
+* Question Tracker
+* Profile Analytics (Disabled for now)
+Top Navbar
+* User Avatar
+* Logout
+* Dark / Light Toggle
+________________
+
+
+Question Tracker
+This is the main page.
+Display all questions inside a beautiful searchable table.
+Columns
+1.         1.        
+Question Number
+Example
+1
+15
+76
+121
+etc.
+Must be sortable.
+________________
+
+
+2.         2.        
+Question Name
+Example
+Two Sum
+3Sum
+Word Break
+etc.
+________________
+
+
+3.         3.        
+Difficulty
+Display colored badges.
+Easy
+Green
+Medium
+Yellow
+Hard
+Red
+________________
+
+
+4.         4.        
+Topic
+Examples
+Array
+Stack
+Queue
+Binary Search
+Graph
+DP
+Trie
+Heap
+Greedy
+Sliding Window
+Backtracking
+Union Find
+Segment Tree
+Monotonic Stack
+Bit Manipulation
+String
+Tree
+Linked List
+HashMap
+Multiple topics should be allowed.
+Display as chips.
+________________
+
+
+5.         5.        
+Approach
+Instead of displaying approach directly, show a button
+“View”
+When clicked,
+Open a Dialog / Modal.
+Modal should display
+Approach (Markdown supported)
+Example
+Problem intuition
+Algorithm
+Complexity
+Mistakes
+Optimizations
+Notes
+Allow syntax highlighted code blocks.
+________________
+
+
+6.         6.        
+LeetCode Link
+Display
+Open Question
+Clicking should open LeetCode in new tab.
+________________
+
+
+7.         7.        
+Actions
+Buttons
+Edit
+Delete
+Confirmation dialog before delete.
+________________
+
+
+Top of Question Tracker
+Top Right
+Button
+* Add Approach
+Click opens modal.
+________________
+
+
+Add Question Modal
+Fields
+Question Number
+Number input
+Required
+________________
+
+
+Question Name
+Text input
+Required
+________________
+
+
+Difficulty
+Dropdown
+Easy
+Medium
+Hard
+________________
+
+
+Topics
+Multi Select
+Allow selecting multiple topics.
+Also allow custom topic.
+________________
+
+
+LeetCode URL
+Validate URL.
+________________
+
+
+Approach
+Large Markdown Editor.
+Toolbar
+Bold
+Italic
+Lists
+Code Block
+Tables
+Quotes
+Preview
+________________
+
+
+Buttons
+Save
+Cancel
+________________
+
+
+Search
+At top
+Search by
+Question Number
+Question Name
+Topic
+Difficulty
+Everything
+________________
+
+
+Filters
+Difficulty
+Easy
+Medium
+Hard
+Topic
+Multiple Select
+________________
+
+
+Sorting
+Question Number
+Difficulty
+Name
+Date Added
+Recently Updated
+________________
+
+
+Pagination
+10
+25
+50
+100 rows
+________________
+
+
+Backend APIs
+POST /questions
+GET /questions
+GET /questions/:id
+PUT /questions/:id
+DELETE /questions/:id
+________________
+
+
+Mongo Schema
+Question
+questionNumber
+number
+questionName
+string
+difficulty
+enum
+topics
+array
+leetcodeUrl
+string
+approach
+markdown string
+createdBy
+userId
+createdAt
+updatedAt
+________________
+
+
+Validation
+No duplicate question numbers per user.
+________________
+
+
+Responsive
+Desktop
+Tablet
+Mobile
+________________
+
+
+Animations
+Smooth page transitions
+Hover effects
+Modal animations
+Skeleton loading
+Toast notifications
+________________
+
+
+Theme
+Beautiful modern dark mode
+Glassmorphism cards
+Rounded corners
+Subtle shadows
+Professional coding dashboard look
+________________
+
+
+Extra Features
+Dark / Light Toggle
+Google Login
+MongoDB support
+Markdown rendering
+Markdown editing
+Toast notifications
+Loading indicators
+Error handling
+Protected routes
+JWT authentication
+Responsive layout
+________________
+
+
+Code Quality
+Use reusable components.
+Use hooks wherever appropriate.
+Use service layer for API calls.
+Follow SOLID principles.
+Use proper TypeScript typing.
+No inline styles.
+Use TailwindCSS.
+Follow ESLint conventions.
+________________
+
+
+Deliverables
+Generate
+1. Complete Backend
+2. Complete Frontend
+3. MongoDB Models
+4. Authentication
+5. APIs
+6. Routing
+7. UI Components
+8. README
+9. Environment variables
+10. Docker support
+11. Seed data
+12. Instructions to run locally
+Everything should be fully functional and production-ready.
+________________
+
+
+PHASE 2 (Do NOT implement now)
+Create another dashboard tab called Profile Analytics.
+This page will consume LeetCode profile data and provide rich analytics.
+Features planned:
+* Total Questions Solved
+* Easy / Medium / Hard Distribution
+* Heatmap of daily submissions
+* Acceptance Rate
+* Current Streak
+* Longest Streak
+* Contest Rating
+* Contest Ranking
+* Global Ranking
+* Topic-wise Progress
+* Company-wise Progress
+* Dynamic charts
+* Weakest Topics
+* Strongest Topics
+* Recommendation Engine suggesting the next problems to solve based on history
+* AI-powered revision planner
+* Progress timeline
+* Monthly and yearly analytics
+* Goal tracking (e.g., 500 problems, Top 10%, etc.)
+Design the application architecture so this analytics module can be plugged in later without major refactoring.
+________________
+
+
+UI Inspiration
+The application should look similar in quality to:
+* GitHub Dashboard
+* Notion
+* Vercel Dashboard
+* Linear
+* LeetCode
+Minimalistic, premium, fast, responsive, and polished.

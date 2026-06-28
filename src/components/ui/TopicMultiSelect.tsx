@@ -1,0 +1,136 @@
+"use client";
+
+import { useMemo, useRef, useState } from "react";
+import { ChevronDown, Plus } from "lucide-react";
+import { TOPICS } from "@/types/question";
+import { TopicChip } from "@/components/ui/TopicChip";
+import { cn } from "@/lib/utils";
+
+interface TopicMultiSelectProps {
+  value: string[];
+  onChange: (topics: string[]) => void;
+}
+
+export function TopicMultiSelect({ value, onChange }: TopicMultiSelectProps) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const options = useMemo(() => {
+    const all = Array.from(new Set([...TOPICS, ...value]));
+    return all.filter((t) =>
+      t.toLowerCase().includes(query.trim().toLowerCase())
+    );
+  }, [query, value]);
+
+  const canAddCustom =
+    query.trim().length > 0 &&
+    !options.some((o) => o.toLowerCase() === query.trim().toLowerCase());
+
+  const toggle = (topic: string) => {
+    if (value.includes(topic)) {
+      onChange(value.filter((t) => t !== topic));
+    } else {
+      onChange([...value, topic]);
+    }
+  };
+
+  const addCustom = () => {
+    const t = query.trim();
+    if (!t) return;
+    if (!value.includes(t)) onChange([...value, t]);
+    setQuery("");
+  };
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex min-h-[2.75rem] w-full flex-wrap items-center gap-1.5 rounded-xl border border-input bg-background px-3 py-2 text-left text-sm transition-colors hover:border-ring/50 focus:outline-none"
+      >
+        {value.length === 0 ? (
+          <span className="text-muted-foreground">Select topics…</span>
+        ) : (
+          value.map((t) => (
+            <TopicChip
+              key={t}
+              label={t}
+              onRemove={() => toggle(t)}
+            />
+          ))
+        )}
+        <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
+      </button>
+
+      {open && (
+        <>
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setOpen(false)}
+          />
+          <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+            <div className="border-b border-border p-2">
+              <input
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && canAddCustom) {
+                    e.preventDefault();
+                    addCustom();
+                  }
+                }}
+                placeholder="Search or add a topic…"
+                className="w-full rounded-lg bg-background px-3 py-2 text-sm outline-none"
+              />
+            </div>
+            <div className="max-h-56 overflow-y-auto p-1">
+              {options.map((topic) => {
+                const selected = value.includes(topic);
+                return (
+                  <button
+                    key={topic}
+                    type="button"
+                    onClick={() => toggle(topic)}
+                    className={cn(
+                      "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent",
+                      selected && "text-primary"
+                    )}
+                  >
+                    {topic}
+                    <span
+                      className={cn(
+                        "flex h-4 w-4 items-center justify-center rounded border",
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border"
+                      )}
+                    >
+                      {selected && "✓"}
+                    </span>
+                  </button>
+                );
+              })}
+              {canAddCustom && (
+                <button
+                  type="button"
+                  onClick={addCustom}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-primary transition-colors hover:bg-accent"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add &quot;{query.trim()}&quot;
+                </button>
+              )}
+              {options.length === 0 && !canAddCustom && (
+                <p className="px-3 py-2 text-sm text-muted-foreground">
+                  No topics found.
+                </p>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
