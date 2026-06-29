@@ -32,3 +32,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local-only prompts & supporting files (kept private)
+/supporting_files/
+/prompt.txt
+/prompt2.md
+/prompt3.md

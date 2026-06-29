@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ListChecks, Network, X } from "lucide-react";
+import { BarChart3, ListChecks, Network, Shapes, X } from "lucide-react";
 
 interface NavItem {
   label: string;
@@ -14,6 +14,11 @@ interface NavItem {
 const NAV: NavItem[] = [
   { label: "Question Tracker", href: "/dashboard/questions", icon: ListChecks },
   { label: "Pattern Library", href: "/dashboard/patterns", icon: Network },
+  {
+    label: "Design Patterns",
+    href: "/dashboard/design-patterns",
+    icon: Shapes
+  },
   {
     label: "Profile Analytics",
     href: "/dashboard/analytics",

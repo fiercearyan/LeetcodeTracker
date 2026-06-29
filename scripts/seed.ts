@@ -51,6 +51,38 @@ PatternSchema.index({ createdBy: 1, name: 1 }, { unique: true });
 const Pattern =
   mongoose.models.Pattern || mongoose.model("Pattern", PatternSchema);
 
+const DesignPatternSchema = new mongoose.Schema(
+  {
+    name: String,
+    type: { type: String, enum: ["Creational", "Structural", "Behavioral"] },
+    description: String,
+    triggerWords: [String],
+    definition: String,
+    problemStatement: String,
+    useCases: String,
+    whenToUse: [String],
+    coreConcepts: [{ _id: false, title: String, description: String }],
+    solution: String,
+    advantages: [String],
+    disadvantages: [String],
+    interviewQuestions: [String],
+    exampleCode: String,
+    relatedPatterns: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "DesignPattern" }
+    ],
+    umlImage: String,
+    notes: String,
+    views: { type: Number, default: 0 },
+    createdBy: String
+  },
+  { timestamps: true }
+);
+DesignPatternSchema.index({ createdBy: 1, name: 1 }, { unique: true });
+
+const DesignPattern =
+  mongoose.models.DesignPattern ||
+  mongoose.model("DesignPattern", DesignPatternSchema);
+
 const userId = process.env.SEED_USER_ID || "seed-user";
 
 const sample = [
@@ -325,6 +357,51 @@ for right in range(len(s)):
   }
 ];
 
+const sampleDesignPatterns = [
+  {
+    name: "Flyweight",
+    type: "Structural",
+    description:
+      "Helps reduce memory usage by sharing data among multiple objects.",
+    triggerWords: ["Extrinsic", "Intrinsic", "Shared State", "Memory"],
+    definition:
+      "Flyweight shares as much data as possible between similar objects. Each object keeps only its unique (extrinsic) state and references shared (intrinsic) state from a cache.",
+    problemStatement:
+      "Creating thousands of identical heavy objects consumes excessive memory and can crash applications.",
+    useCases: "- Word Processor\n- Game Development\n- Icons\n- Character Rendering",
+    whenToUse: [
+      "Memory is limited",
+      "Objects share common state",
+      "Object creation is expensive"
+    ],
+    coreConcepts: [
+      { title: "Intrinsic State", description: "Shared between all objects." },
+      {
+        title: "Extrinsic State",
+        description: "Provided by the client at runtime."
+      },
+      { title: "Flyweight Object", description: "Stores intrinsic state." },
+      {
+        title: "Flyweight Factory",
+        description: "Creates and caches flyweight objects."
+      }
+    ],
+    solution:
+      "1. Separate intrinsic and extrinsic state.\n2. Store only intrinsic state inside the Flyweight.\n3. Make the Flyweight immutable.\n4. Cache Flyweight objects in a factory.\n5. Pass extrinsic data during method calls.",
+    advantages: ["Saves memory", "Faster object creation", "Reuse existing objects"],
+    disadvantages: ["Increased complexity", "Harder debugging"],
+    interviewQuestions: [
+      "Why is Flyweight a Structural Pattern?\nIt composes objects by sharing structure (intrinsic state) to form efficient larger structures.",
+      "Difference between Flyweight and Singleton?\nSingleton ensures one instance globally; Flyweight shares many fine-grained instances keyed by intrinsic state.",
+      "Intrinsic vs Extrinsic State?\nIntrinsic is shared and stored in the flyweight; extrinsic is unique and supplied by the client at call time."
+    ],
+    exampleCode:
+      "```java\nMap<Character, Glyph> cache = new HashMap<>();\nGlyph get(char c) {\n    return cache.computeIfAbsent(c, Glyph::new);\n}\n```\n\n```python\ncache = {}\ndef get_glyph(c):\n    if c not in cache:\n        cache[c] = Glyph(c)\n    return cache[c]\n```",
+    notes:
+      "> Reach for Flyweight when profiling shows many near-identical objects dominating memory."
+  }
+];
+
 async function main() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error("MONGODB_URI is not set");
@@ -368,6 +445,17 @@ async function main() {
     inserted += 1;
   }
   console.log(`Seeded ${inserted} questions for user "${userId}".`);
+
+  let dpInserted = 0;
+  for (const dp of sampleDesignPatterns) {
+    await DesignPattern.updateOne(
+      { createdBy: userId, name: dp.name },
+      { $set: { ...dp, createdBy: userId } },
+      { upsert: true }
+    );
+    dpInserted += 1;
+  }
+  console.log(`Seeded ${dpInserted} design patterns for user "${userId}".`);
 
   await mongoose.disconnect();
   console.log("Done.");

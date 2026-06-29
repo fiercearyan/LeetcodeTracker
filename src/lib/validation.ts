@@ -66,3 +66,39 @@ export const patternSchema = z.object({
 export type PatternSchemaInput = z.infer<typeof patternSchema>;
 
 export const patternUpdateSchema = patternSchema.partial();
+
+/* ------------------------- Design Patterns ------------------------- */
+
+export const designPatternSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(120, "Name too long"),
+  type: z.enum(["Creational", "Structural", "Behavioral"]),
+  description: z.string().trim().max(400, "Description too long").default(""),
+  triggerWords: z.array(z.string().trim().min(1)).default([]),
+  definition: z.string().default(""),
+  problemStatement: z.string().default(""),
+  useCases: z.string().default(""),
+  whenToUse: z.array(z.string().trim().min(1)).default([]),
+  coreConcepts: z
+    .array(
+      z.object({
+        title: z.string().trim().default(""),
+        description: z.string().trim().default("")
+      })
+    )
+    .default([]),
+  solution: z.string().default(""),
+  advantages: z.array(z.string().trim().min(1)).default([]),
+  disadvantages: z.array(z.string().trim().min(1)).default([]),
+  interviewQuestions: z.array(z.string().trim().min(1)).default([]),
+  exampleCode: z.string().default(""),
+  relatedPatterns: z
+    .array(z.string().regex(/^[a-f\d]{24}$/i, "Invalid pattern id"))
+    .default([]),
+  // base64 data URL or empty
+  umlImage: z.string().default(""),
+  notes: z.string().default("")
+});
+
+export type DesignPatternSchemaInput = z.infer<typeof designPatternSchema>;
+
+export const designPatternUpdateSchema = designPatternSchema.partial();

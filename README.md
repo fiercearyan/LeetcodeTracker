@@ -28,6 +28,11 @@ A production-quality web app to track LeetCode problems, approaches and notes �
   - Clicking a related question deep-links into the Question Tracker and opens it.
   - Add/Edit modal: tags, trigger-keyword chip input (Enter / comma / paste), Markdown notes + template editors, mental-checklist and complexity-row editors.
   - Search across name / tags / description / notes / trigger keywords; filter by tag; sort by Alphabetical, Recently Updated, Recently Created, Most Viewed.
+- **Design Patterns** — a personal software-engineering handbook for design patterns.
+  - Responsive card grid (4 / 2 / 1) with type badges (Creational / Structural / Behavioral), trigger-word chips and hover animations.
+  - Right-side drawer with Overview, Use Cases, Problem Statement, a When-to-Use checklist, Core Concept cards, How-It-Solves steps, a zoomable **UML diagram**, multi-language **example code tabs**, Advantages/Disadvantages, collapsible **interview-question accordions**, linked **related patterns**, and personal notes — all Markdown with syntax highlighting.
+  - Search across name / type / description / trigger words / use cases; multi-select type filter; sort by Alphabetical, Recently Updated, Recently Created.
+  - Full CRUD with a rich add/edit form (chip inputs, dynamic core-concept rows, image upload, related-pattern picker). Architected so future handbook sections (SOLID, LLD/HLD, JVM, etc.) can be added without refactoring.
 - **Responsive** across desktop, tablet and mobile.
 
 ---
