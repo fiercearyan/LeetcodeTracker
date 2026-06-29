@@ -116,14 +116,18 @@ export function PatternLibrary() {
         className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
       >
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Pattern Library</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Store reusable DSA tricks and interview heuristics.
+          <h1 className="font-display text-[42px] leading-none tracking-[0.3px]">
+            Pattern Library
+          </h1>
+          <p className="mt-3 text-[13.5px]" style={{ color: "var(--t5)" }}>
+            Reusable DSA tricks &amp; interview heuristics — the mental hooks
+            behind every solve.
           </p>
         </div>
         <button
           onClick={openAdd}
-          className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow-md sm:self-auto"
+          className="inline-flex items-center justify-center gap-2 self-start rounded-[11px] bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-px hover:brightness-110 sm:self-auto"
+          style={{ boxShadow: "0 6px 20px -8px var(--accent)" }}
         >
           <Plus className="h-4 w-4" /> Add Pattern
         </button>

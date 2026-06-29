@@ -85,12 +85,19 @@ export function PatternViewDrawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
-            className="glass-card fixed right-0 top-0 z-50 flex h-full w-full max-w-3xl flex-col rounded-none border-y-0 border-r-0 sm:rounded-l-2xl"
+            className="fixed right-0 top-0 z-50 flex h-full w-full max-w-3xl flex-col rounded-none sm:rounded-l-2xl"
+            style={{
+              background: "var(--surface)",
+              borderLeft: "1px solid rgba(var(--ink),0.09)",
+              boxShadow: "-30px 0 80px -30px rgba(0,0,0,0.6)"
+            }}
           >
             {/* Header */}
             <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-4">
               <div className="min-w-0">
-                <h2 className="truncate text-xl font-bold">{pattern.name}</h2>
+                <h2 className="font-display truncate text-[34px] leading-none">
+                  {pattern.name}
+                </h2>
                 {pattern.description && (
                   <p className="mt-1 text-sm text-muted-foreground">
                     {pattern.description}

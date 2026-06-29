@@ -31,7 +31,7 @@ export function PatternCard({
       className="glass-card group flex cursor-pointer flex-col p-5 transition-shadow hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="line-clamp-2 text-base font-semibold leading-snug">
+        <h3 className="font-display line-clamp-2 text-[26px] leading-[1.05]">
           {pattern.name}
         </h3>
       </div>

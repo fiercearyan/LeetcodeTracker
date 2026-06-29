@@ -11,22 +11,22 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
+          "Hanken Grotesk",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
           "Segoe UI",
           "Roboto",
-          "Helvetica Neue",
-          "Arial",
           "sans-serif"
         ],
+        display: ["Instrument Serif", "Georgia", "serif"],
         mono: [
+          "JetBrains Mono",
           "ui-monospace",
           "SFMono-Regular",
           "Menlo",
           "Monaco",
           "Consolas",
-          "Liberation Mono",
           "monospace"
         ]
       },
@@ -49,8 +49,8 @@ const config: Config = {
           foreground: "hsl(var(--primary-foreground))"
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))"
+          DEFAULT: "hsl(var(--accent-bg))",
+          foreground: "hsl(var(--accent-fg))"
         }
       },
       borderRadius: {

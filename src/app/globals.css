@@ -3,56 +3,137 @@
 @tailwind utilities;
 
 @layer base {
+  /* ===================== Recall design tokens ===================== */
+  /* Light theme (default :root) */
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --ink: 17, 18, 22;
+    --bg: #f6f6f3;
+    --bg-side: #efefeb;
+    --tile: #ffffff;
+    --surface: #ffffff;
+    --avatar: #e7e2f7;
+    --bg-blur: rgba(247, 247, 244, 0.82);
+
+    --t1: #1b1c21;
+    --t1b: #23242a;
+    --t2a: #33343b;
+    --t2: #3e4047;
+    --t2n: #474951;
+    --t3a: #54565e;
+    --t3: #5c5e66;
+    --t3b: #5f616a;
+    --t4: #6b6d75;
+    --t4b: #75777f;
+    --t5: #7d7f87;
+    --t6: #88898f;
+    --t7: #94969d;
+    --t8: #9d9fa6;
+    --t9: #a6a8ae;
+    --t10: #aeb0b6;
+
+    --accent: #8b7ff0;
+    --accent-soft: rgba(139, 127, 240, 0.1);
+    --accent-border: rgba(139, 127, 240, 0.24);
+
+    --code-bg: #0d0e12;
+
+    --display-font: "Instrument Serif", Georgia, serif;
+
+    /* Tailwind semantic tokens (HSL triplets, drive existing utilities) */
+    --background: 60 13% 96%;
+    --foreground: 230 10% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --muted: 210 40% 94%;
-    --muted-foreground: 215 16% 47%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 210 40% 92%;
-    --accent-foreground: 222 47% 11%;
-    --border: 214 32% 88%;
-    --input: 214 32% 88%;
-    --ring: 221 83% 53%;
+    --card-foreground: 230 10% 12%;
+    --muted: 60 10% 92%;
+    --muted-foreground: 229 5% 51%;
+    --primary: 246 79% 72%;
+    --primary-foreground: 248 45% 12%;
+    --accent-bg: 60 9% 90%;
+    --accent-fg: 230 10% 12%;
+    --border: 60 8% 88%;
+    --input: 55 8% 86%;
+    --ring: 246 79% 72%;
   }
 
+  /* Dark theme */
   .dark {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 96%;
-    --card: 222 40% 11%;
-    --card-foreground: 210 40% 96%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
-    --accent: 217 33% 20%;
-    --accent-foreground: 210 40% 96%;
-    --border: 217 33% 20%;
-    --input: 217 33% 22%;
-    --ring: 217 91% 60%;
+    --ink: 255, 255, 255;
+    --bg: #0e0f13;
+    --bg-side: #0a0b0e;
+    --tile: #14151b;
+    --surface: #15161c;
+    --avatar: #2a2740;
+    --bg-blur: rgba(14, 15, 19, 0.72);
+
+    --t1: #ececef;
+    --t1b: #e6e7eb;
+    --t2a: #d6d7dc;
+    --t2: #c2c3cb;
+    --t2n: #b9bac2;
+    --t3a: #a4a6ae;
+    --t3: #9c9ea6;
+    --t3b: #9a9ca4;
+    --t4: #8c8e97;
+    --t4b: #83858e;
+    --t5: #7a7c85;
+    --t6: #6e7079;
+    --t7: #62646d;
+    --t8: #5c5e68;
+    --t9: #52545c;
+    --t10: #4e5058;
+
+    --accent: #8b7ff0;
+    --accent-soft: rgba(139, 127, 240, 0.1);
+    --accent-border: rgba(139, 127, 240, 0.24);
+
+    --code-bg: #0d0e12;
+
+    --background: 228 15% 6%;
+    --foreground: 240 8% 93%;
+    --card: 231 14% 10%;
+    --card-foreground: 240 8% 93%;
+    --muted: 232 13% 13%;
+    --muted-foreground: 228 7% 50%;
+    --primary: 246 79% 72%;
+    --primary-foreground: 248 45% 8%;
+    --accent-bg: 232 13% 14%;
+    --accent-fg: 240 8% 93%;
+    --border: 232 11% 15%;
+    --input: 232 11% 18%;
+    --ring: 246 79% 72%;
   }
 
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  ::selection {
+    background: rgba(139, 127, 240, 0.3);
+  }
 }
 
 @layer components {
-  /* Glassmorphism card used throughout the dashboard */
+  /* Card surfaces */
   .glass-card {
-    @apply rounded-2xl border border-border/60 bg-card/70 shadow-sm backdrop-blur-xl;
+    @apply rounded-2xl border shadow-sm;
+    background: rgba(var(--ink), 0.018);
+    border-color: rgba(var(--ink), 0.07);
+  }
+
+  .font-display {
+    font-family: var(--display-font);
+    font-weight: 400;
   }
 
   .skeleton {
-    @apply relative overflow-hidden rounded-md bg-muted;
+    @apply relative overflow-hidden rounded-md;
+    background: rgba(var(--ink), 0.06);
   }
   .skeleton::after {
     @apply absolute inset-0 -translate-x-full animate-shimmer;
@@ -60,7 +141,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      hsl(var(--foreground) / 0.06),
+      rgba(var(--ink), 0.06),
       transparent
     );
   }
@@ -72,11 +153,17 @@
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 9999px;
+  background: rgba(var(--ink), 0.1);
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: rgba(var(--ink), 0.18);
+  background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* ---------- Markdown / highlight.js theming ---------- */
@@ -105,13 +192,18 @@
   @apply text-primary underline underline-offset-2;
 }
 .markdown-body blockquote {
-  @apply my-3 border-l-4 border-primary/50 bg-muted/40 py-1 pl-4 italic text-muted-foreground;
+  @apply my-3 rounded-r-xl py-2 pl-4 italic;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--t2n);
 }
 .markdown-body code:not(pre code) {
   @apply rounded bg-orange-500/10 px-1.5 py-0.5 font-mono text-[0.85em] font-medium text-orange-600 dark:text-orange-400;
 }
 .markdown-body pre {
-  @apply my-4 overflow-x-auto rounded-xl border border-border bg-[#0d1117] p-4 text-[0.85rem];
+  @apply my-4 overflow-x-auto rounded-xl border p-4 text-[0.85rem];
+  background: var(--code-bg);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 .markdown-body pre code {
   @apply bg-transparent p-0 font-mono;
@@ -132,80 +224,62 @@
 }
 .markdown-body th,
 .markdown-body td {
-  @apply border border-border px-3 py-2;
+  @apply border px-3 py-2;
 }
 .markdown-body th {
-  @apply bg-muted font-semibold;
+  @apply font-semibold;
+  background: rgba(var(--ink), 0.03);
 }
 
-/* highlight.js github-dark palette (inlined, lightweight subset) */
+/* highlight.js — Material-ish palette matching the reference mockup */
 .hljs {
-  color: #c9d1d9;
-  background: #0d1117;
+  color: #c8cad2;
+  background: var(--code-bg);
 }
-.hljs-doctag,
 .hljs-keyword,
+.hljs-doctag,
 .hljs-meta .hljs-keyword,
 .hljs-template-tag,
 .hljs-template-variable,
 .hljs-type,
 .hljs-variable.language_ {
-  color: #ff7b72;
+  color: #c792ea;
 }
 .hljs-title,
 .hljs-title.class_,
-.hljs-title.class_.inherited__,
-.hljs-title.function_ {
-  color: #d2a8ff;
+.hljs-title.function_,
+.hljs-section,
+.hljs-name {
+  color: #82aaff;
 }
+.hljs-built_in,
 .hljs-attr,
 .hljs-attribute,
 .hljs-literal,
-.hljs-meta,
+.hljs-symbol,
 .hljs-number,
-.hljs-operator,
-.hljs-selector-attr,
 .hljs-selector-class,
-.hljs-selector-id,
-.hljs-variable {
-  color: #79c0ff;
+.hljs-selector-id {
+  color: #e0a06a;
 }
 .hljs-string,
 .hljs-meta .hljs-string,
-.hljs-regexp {
-  color: #a5d6ff;
-}
-.hljs-built_in,
-.hljs-symbol {
-  color: #ffa657;
+.hljs-regexp,
+.hljs-quote {
+  color: #9ece8a;
 }
 .hljs-comment,
 .hljs-code,
 .hljs-formula {
-  color: #6a9955;
+  color: #5c5e68;
   font-style: italic;
-}
-.hljs-name,
-.hljs-quote,
-.hljs-selector-pseudo,
-.hljs-selector-tag {
-  color: #7ee787;
-}
-.hljs-subst {
-  color: #c9d1d9;
-}
-.hljs-section {
-  color: #1f6feb;
-  font-weight: bold;
 }
 .hljs-bullet {
   color: #f2cc60;
 }
 .hljs-emphasis {
-  color: #c9d1d9;
   font-style: italic;
 }
 .hljs-strong {
-  color: #c9d1d9;
   font-weight: bold;
 }

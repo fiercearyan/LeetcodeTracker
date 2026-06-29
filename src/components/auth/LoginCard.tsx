@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
-import { Code2, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 
 export function LoginCard() {
@@ -22,14 +22,23 @@ export function LoginCard() {
       className="glass-card relative z-10 w-full max-w-md p-8 sm:p-10"
     >
       <div className="mb-8 flex flex-col items-center text-center">
-        <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-purple-500 text-primary-foreground shadow-lg shadow-primary/30">
-          <Code2 className="h-8 w-8" />
+        <div
+          className="mb-5 flex h-16 w-16 items-center justify-center rounded-[18px] font-mono text-2xl font-semibold"
+          style={{
+            background: "var(--tile)",
+            border: "1px solid var(--accent-border)",
+            color: "var(--accent)",
+            boxShadow: "inset 0 1px 0 rgba(var(--ink),0.05)"
+          }}
+        >
+          &lt;/&gt;
         </div>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          LeetCode Tracker
+        <h1 className="font-display text-4xl tracking-[0.3px] sm:text-5xl">
+          Recall
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Track problems, approaches and notes in one premium dashboard.
+        <p className="mt-2 text-sm" style={{ color: "var(--t5)" }}>
+          Your DSA second brain — patterns, approaches and notes you can summon
+          on demand.
         </p>
       </div>
 

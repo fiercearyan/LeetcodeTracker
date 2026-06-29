@@ -61,15 +61,22 @@ export function Modal({
               transition={{ duration: 0.2, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
               className={cn(
-                "glass-card flex max-h-[90vh] w-full flex-col overflow-hidden",
+                "flex max-h-[90vh] w-full flex-col overflow-hidden rounded-[20px]",
                 size
               )}
+              style={{
+                background: "var(--surface)",
+                border: "1px solid rgba(var(--ink),0.09)",
+                boxShadow: "0 40px 100px -30px rgba(0,0,0,0.55)"
+              }}
             >
               {(title || description) && (
                 <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-4">
                   <div>
                     {title && (
-                      <h2 className="text-lg font-semibold">{title}</h2>
+                      <h2 className="font-display text-[26px] leading-tight">
+                        {title}
+                      </h2>
                     )}
                     {description && (
                       <p className="mt-0.5 text-sm text-muted-foreground">

@@ -59,7 +59,7 @@ export function QuestionTable({
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+            <tr className="border-b border-border text-left font-mono text-[10.5px] uppercase tracking-[1.4px] text-muted-foreground">
               {COLUMNS.map((col, i) => (
                 <th
                   key={i}

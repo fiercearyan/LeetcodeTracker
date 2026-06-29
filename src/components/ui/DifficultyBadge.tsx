@@ -1,20 +1,25 @@
-import { cn } from "@/lib/utils";
 import type { Difficulty } from "@/types/question";
 
-const styles: Record<Difficulty, string> = {
-  Easy: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ring-emerald-500/30",
-  Medium: "bg-amber-500/15 text-amber-600 dark:text-amber-400 ring-amber-500/30",
-  Hard: "bg-rose-500/15 text-rose-600 dark:text-rose-400 ring-rose-500/30"
+export const DIFFICULTY_COLOR: Record<Difficulty, string> = {
+  Easy: "#7DC4A0",
+  Medium: "#D7A75A",
+  Hard: "#D98A82"
 };
 
+/**
+ * Difficulty shown as a glowing colored dot + colored label (Recall style).
+ */
 export function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
+  const c = DIFFICULTY_COLOR[difficulty];
   return (
     <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset",
-        styles[difficulty]
-      )}
+      className="inline-flex items-center gap-2 text-[13.5px] font-medium"
+      style={{ color: c }}
     >
+      <span
+        className="inline-block h-[7px] w-[7px] shrink-0 rounded-full"
+        style={{ background: c, boxShadow: `0 0 9px ${c}` }}
+      />
       {difficulty}
     </span>
   );
