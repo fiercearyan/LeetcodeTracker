@@ -2,7 +2,7 @@
 
 import { Copy, Trash2 } from "lucide-react";
 import type { Edge, Node } from "reactflow";
-import { EDGE_KINDS } from "@/components/diagrams/palette";
+import { EDGE_KINDS, EDGE_PATHS } from "@/components/diagrams/palette";
 
 interface Props {
   node: Node | null;
@@ -280,6 +280,22 @@ function EdgeProps({
           {EDGE_KINDS.map((k) => (
             <option key={k.kind} value={k.kind}>
               {k.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className={label} style={{ color: "var(--t6)" }}>
+          Path
+        </label>
+        <select
+          className={field}
+          value={String(d.pathStyle ?? "curved")}
+          onChange={(e) => set({ data: { ...d, pathStyle: e.target.value } })}
+        >
+          {EDGE_PATHS.map((p) => (
+            <option key={p.value} value={p.value}>
+              {p.label}
             </option>
           ))}
         </select>

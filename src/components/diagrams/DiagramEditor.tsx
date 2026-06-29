@@ -48,22 +48,41 @@ import type { Diagram } from "@/types/diagram";
 
 const EDGE_DEFAULT_COLOR = "#8b7ff0";
 
+type Marker = { type: MarkerType; color: string; width?: number; height?: number };
+
 function decorateEdge(edge: Edge): Edge {
   const data = (edge.data ?? {}) as Record<string, unknown>;
   const kind = String(data.kind ?? "arrow");
   const color = String(data.color ?? EDGE_DEFAULT_COLOR);
   const thickness = Number(data.thickness ?? 2);
+  const pathStyle = String(data.pathStyle ?? "curved");
+
+  // Path geometry is independent of the arrow/relationship type.
+  const type =
+    pathStyle === "straight"
+      ? "straight"
+      : pathStyle === "step"
+        ? "smoothstep"
+        : "default";
+
   const style: React.CSSProperties = { stroke: color, strokeWidth: thickness };
-  const open = { type: MarkerType.Arrow, color };
-  const closed = { type: MarkerType.ArrowClosed, color };
-  let type = "default";
-  let markerEnd: typeof open | undefined;
-  let markerStart: typeof open | undefined;
+  const open: Marker = { type: MarkerType.Arrow, color, width: 20, height: 20 };
+  const closed: Marker = {
+    type: MarkerType.ArrowClosed,
+    color,
+    width: 22,
+    height: 22
+  };
+  let markerEnd: Marker | undefined;
+  let markerStart: Marker | undefined;
 
   switch (kind) {
     case "line":
       break;
     case "dashed":
+      style.strokeDasharray = "6 4";
+      markerEnd = open;
+      break;
     case "dependency":
       style.strokeDasharray = "6 4";
       markerEnd = open;
@@ -73,21 +92,36 @@ function decorateEdge(edge: Edge): Edge {
       markerStart = open;
       break;
     case "inheritance":
-    case "composition":
+      // filled triangle at the target (points to the parent)
       markerEnd = closed;
       break;
-    case "orthogonal":
-      type = "smoothstep";
-      markerEnd = open;
+    case "composition":
+      // filled marker at the source (the "whole")
+      markerStart = closed;
+      break;
+    case "aggregation":
+      // open marker at the source
+      markerStart = open;
       break;
     case "association":
-    case "aggregation":
-    case "curved":
     case "arrow":
     default:
       markerEnd = open;
   }
-  return { ...edge, type, style, markerEnd, markerStart };
+
+  return {
+    ...edge,
+    type,
+    style,
+    markerEnd,
+    markerStart,
+    // Explicit inline label styles so labels survive PNG/SVG export
+    // (React Flow's stylesheet rules aren't captured by html-to-image).
+    labelStyle: { fill: "#1b1c21", fontWeight: 600, fontSize: 11 },
+    labelBgStyle: { fill: "#ffffff", fillOpacity: 0.96 },
+    labelBgPadding: [6, 4] as [number, number],
+    labelBgBorderRadius: 6
+  };
 }
 
 let idCounter = 1;

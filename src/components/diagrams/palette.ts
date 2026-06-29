@@ -96,10 +96,15 @@ export const EDGE_KINDS: EdgeKindDef[] = [
   { kind: "dashed", label: "Dashed Arrow" },
   { kind: "bidirectional", label: "Bidirectional" },
   { kind: "association", label: "Association" },
-  { kind: "inheritance", label: "Inheritance" },
-  { kind: "composition", label: "Composition" },
-  { kind: "aggregation", label: "Aggregation" },
-  { kind: "dependency", label: "Dependency" },
-  { kind: "curved", label: "Curved" },
-  { kind: "orthogonal", label: "Orthogonal" }
+  { kind: "inheritance", label: "Inheritance (▷ at end)" },
+  { kind: "composition", label: "Composition (◆ at start)" },
+  { kind: "aggregation", label: "Aggregation (◇ at start)" },
+  { kind: "dependency", label: "Dependency (dashed)" }
+];
+
+/** Path geometry — independent of the arrow/relationship type. */
+export const EDGE_PATHS: { value: string; label: string }[] = [
+  { value: "curved", label: "Curved" },
+  { value: "straight", label: "Straight" },
+  { value: "step", label: "Step / Orthogonal" }
 ];
