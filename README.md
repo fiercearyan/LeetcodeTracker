@@ -33,6 +33,12 @@ A production-quality web app to track LeetCode problems, approaches and notes �
   - Right-side drawer with Overview, Use Cases, Problem Statement, a When-to-Use checklist, Core Concept cards, How-It-Solves steps, a zoomable **UML diagram**, multi-language **example code tabs**, Advantages/Disadvantages, collapsible **interview-question accordions**, linked **related patterns**, and personal notes — all Markdown with syntax highlighting.
   - Search across name / type / description / trigger words / use cases; multi-select type filter; sort by Alphabetical, Recently Updated, Recently Created.
   - Full CRUD with a rich add/edit form (chip inputs, dynamic core-concept rows, image upload, related-pattern picker). Architected so future handbook sections (SOLID, LLD/HLD, JVM, etc.) can be added without refactoring.
+- **Diagram Builder** — a lightweight UML / DSA / system-design diagram editor built on **React Flow** (SVG, high-performance, lazy-loaded).
+  - Gallery of saved diagrams (search, folders, tags) with new / open / duplicate / rename / delete / export.
+  - 3-pane editor: a data-driven component **palette** (Basic / UML / DSA / System Design — drag onto canvas), the canvas (pan, zoom, multi-select, snap-to-grid, undo/redo, duplicate, keyboard shortcuts), and a **properties panel** (label, fields/methods, size, colors, font, radius, opacity, alignment; edge type, label, color, thickness, animated).
+  - Custom nodes (class / interface / abstract / enum / database cylinder / actor / note / heading / text / boxes) and multiple edge types (arrow, dashed, inheritance, bidirectional, dependency, orthogonal, …).
+  - One-click auto-layout, **autosave** (debounced, non-blocking, with Saved / Saving / Unsaved status), and **export** to PNG (transparent / white / dark, 2× / 4×) and editable JSON, plus JSON import.
+  - Schema carries `linkedQuestions` / `linkedPatterns` / `linkedDesignPatterns`, so diagrams can be attached to other modules later without refactoring.
 - **Responsive** across desktop, tablet and mobile.
 
 ---

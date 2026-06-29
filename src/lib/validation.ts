@@ -102,3 +102,27 @@ export const designPatternSchema = z.object({
 export type DesignPatternSchemaInput = z.infer<typeof designPatternSchema>;
 
 export const designPatternUpdateSchema = designPatternSchema.partial();
+
+/* ---------------------------- Diagrams ----------------------------- */
+
+const objectIdArray = z
+  .array(z.string().regex(/^[a-f\d]{24}$/i, "Invalid id"))
+  .default([]);
+
+export const diagramSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(160, "Title too long"),
+  description: z.string().trim().max(500).default(""),
+  tags: z.array(z.string().trim().min(1)).default([]),
+  folder: z.string().trim().max(80).default(""),
+  // Node/edge graphs are stored as-is from React Flow.
+  nodes: z.array(z.any()).default([]),
+  edges: z.array(z.any()).default([]),
+  thumbnail: z.string().default(""),
+  linkedQuestions: objectIdArray,
+  linkedPatterns: objectIdArray,
+  linkedDesignPatterns: objectIdArray
+});
+
+export type DiagramSchemaInput = z.infer<typeof diagramSchema>;
+
+export const diagramUpdateSchema = diagramSchema.partial();

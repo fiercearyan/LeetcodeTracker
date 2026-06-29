@@ -4,6 +4,8 @@ import type { PatternDocument } from "@/models/Pattern";
 import type { Pattern } from "@/types/pattern";
 import type { DesignPatternDocument } from "@/models/DesignPattern";
 import type { DesignPattern } from "@/types/designPattern";
+import type { DiagramDocument } from "@/models/Diagram";
+import type { Diagram } from "@/types/diagram";
 
 /**
  * Convert a Mongoose document into a plain, client-safe Question object.
@@ -71,6 +73,27 @@ export function serializeDesignPattern(
     umlImage: doc.umlImage ?? "",
     notes: doc.notes ?? "",
     views: doc.views ?? 0,
+    createdBy: doc.createdBy,
+    createdAt: doc.createdAt.toISOString(),
+    updatedAt: doc.updatedAt.toISOString()
+  };
+}
+
+export function serializeDiagram(doc: DiagramDocument): Diagram {
+  return {
+    _id: String(doc._id),
+    title: doc.title,
+    description: doc.description ?? "",
+    tags: doc.tags ?? [],
+    folder: doc.folder ?? "",
+    nodes: (doc.nodes ?? []) as Diagram["nodes"],
+    edges: (doc.edges ?? []) as Diagram["edges"],
+    thumbnail: doc.thumbnail ?? "",
+    linkedQuestions: (doc.linkedQuestions ?? []).map((p) => String(p)),
+    linkedPatterns: (doc.linkedPatterns ?? []).map((p) => String(p)),
+    linkedDesignPatterns: (doc.linkedDesignPatterns ?? []).map((p) =>
+      String(p)
+    ),
     createdBy: doc.createdBy,
     createdAt: doc.createdAt.toISOString(),
     updatedAt: doc.updatedAt.toISOString()
