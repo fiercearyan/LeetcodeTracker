@@ -39,6 +39,11 @@ A production-quality web app to track LeetCode problems, approaches and notes �
   - Custom nodes (class / interface / abstract / enum / database cylinder / actor / note / heading / text / boxes) and multiple edge types (arrow, dashed, inheritance, bidirectional, dependency, orthogonal, …).
   - One-click auto-layout, **autosave** (debounced, non-blocking, with Saved / Saving / Unsaved status), and **export** to PNG (transparent / white / dark, 2× / 4×) and editable JSON, plus JSON import.
   - Schema carries `linkedQuestions` / `linkedPatterns` / `linkedDesignPatterns`, so diagrams can be attached to other modules later without refactoring.
+- **Project Revision** — an interview revision hub where each card is a project interview question, loaded from a local JSON file.
+  - Responsive card grid (heading + question, favorite toggle, "Revised" indicator) with a reading-progress bar (`N / M revised`).
+  - Right-side drawer with the full Markdown answer (GFM, syntax highlighting, code-block copy buttons), collapsible `##` sections with Expand All / Collapse All, Previous / Next navigation, Copy Answer, and keyboard shortcuts (←/→ navigate, Esc close, Ctrl/⌘+C copy).
+  - Instant search across heading / question / answer; favorites, viewed progress and last-opened persisted in `localStorage`.
+  - Data flows through a `RevisionRepository` **interface** (currently a local JSON implementation), so it can migrate to MongoDB by swapping one class — no UI changes.
 - **Responsive** across desktop, tablet and mobile.
 
 ---

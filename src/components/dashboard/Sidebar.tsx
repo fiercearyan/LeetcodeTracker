@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
+  BookOpen,
   ListChecks,
   Network,
   Shapes,
@@ -25,6 +26,11 @@ const NAV: NavItem[] = [
     label: "Design Patterns",
     href: "/dashboard/design-patterns",
     icon: Shapes
+  },
+  {
+    label: "Project Revision",
+    href: "/dashboard/project-revision",
+    icon: BookOpen
   },
   { label: "Diagram Builder", href: "/dashboard/diagrams", icon: Workflow },
   {

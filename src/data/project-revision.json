@@ -1,0 +1,127 @@
+[
+  {
+    "heading": "IBM WatsonX Project Overview",
+    "question": "Explain your current project.",
+    "answer": "## Purpose\nI worked on the backend platform of IBM WatsonX Agentic AI responsible for AI model onboarding, deployment, validation, monitoring, and lifecycle management.\n\n## Responsibilities\n- Built Java, Spring Boot, Scala and Go based microservices.\n- Developed REST APIs for model onboarding and deployment.\n- Built Go-based Functional Verification Testing (FVT) framework.\n- Worked on Redis caching, Kafka/RabbitMQ messaging, Kubernetes deployments and observability.\n\n## Technologies Used\n- Java, Spring Boot, Scala, Go\n- Kafka, RabbitMQ\n- Redis, MongoDB\n- Kubernetes, Docker\n- OpenTelemetry, Instana\n\n## My Project\nSupported onboarding and deployment of BYOM, Foundation Models, LoRA and TSFM models."
+  },
+  {
+    "heading": "Project Architecture",
+    "question": "Explain the architecture of your project.",
+    "answer": "## Flow\n1. User uploads AI model.\n2. API Gateway authenticates request.\n3. Model Service validates request and stores metadata in MongoDB.\n4. Kafka publishes deployment event.\n5. Deployment Service consumes event.\n6. Kubernetes deploys the model.\n7. Deployment status is cached in Redis.\n8. RabbitMQ triggers Go-based validation framework.\n9. Validation results are stored and monitored using OpenTelemetry and Instana.\n\n## Why this architecture?\n- Loose coupling\n- Scalability\n- Fault tolerance\n- Faster deployment lifecycle"
+  },
+  {
+    "heading": "Microservices",
+    "question": "What microservices were present in your project?",
+    "answer": "## Major Services\n- API Gateway\n- Authentication Service\n- Model Service\n- Deployment Service\n- Validation Service\n- Monitoring Service\n\n## Communication\n- REST for synchronous communication.\n- Kafka/RabbitMQ for asynchronous workflows.\n\n## My Contribution\nWorked mainly on Model Service, Deployment workflows, Validation framework and caching."
+  },
+  {
+    "heading": "End-to-End Request Flow",
+    "question": "Explain one request flow end-to-end.",
+    "answer": "## Flow\n1. Client sends request with JWT.\n2. API Gateway validates JWT.\n3. Model Service validates metadata.\n4. Metadata stored in MongoDB.\n5. Kafka publishes deployment event.\n6. Deployment Service deploys model on Kubernetes.\n7. Deployment status stored in Redis.\n8. RabbitMQ triggers validation.\n9. Go FVT validates deployment.\n10. OpenTelemetry traces request and Instana visualizes it."
+  },
+  {
+    "heading": "JWT Authentication",
+    "question": "How is authentication implemented in your project?",
+    "answer": "## Purpose\nSecure backend APIs.\n\n## Flow\n1. User authenticates with IAM.\n2. IAM generates JWT.\n3. Client sends JWT in Authorization header.\n4. API Gateway/Microservice validates signature and expiry.\n5. User claims and roles are extracted.\n6. Request proceeds if authorized.\n\n## Why JWT?\n- Stateless\n- Suitable for distributed microservices\n- No server-side session storage\n\n## Authorization\nRoles like MODEL_VIEWER, MODEL_DEPLOYER and MODEL_ADMIN determine access."
+  },
+  {
+    "heading": "Kafka",
+    "question": "Where is Kafka used in your project and why?",
+    "answer": "## Purpose\nHandle long-running deployment workflows asynchronously.\n\n## Events\n- MODEL_ONBOARDED\n- MODEL_DEPLOY_REQUESTED\n- MODEL_DEPLOYED\n- MODEL_DEPLOYMENT_FAILED\n\n## Why Kafka?\n- Decouples services\n- Supports retries\n- Horizontal scaling\n- Durable event storage\n\n## My Project\nModel Service published deployment events which Deployment Service consumed."
+  },
+  {
+    "heading": "RabbitMQ",
+    "question": "Why did your project use RabbitMQ along with Kafka?",
+    "answer": "## Kafka\nUsed for platform-wide event streaming.\n\n## RabbitMQ\nUsed for task-oriented messaging like triggering validation jobs.\n\n## Why both?\nKafka handles event streaming efficiently, whereas RabbitMQ is better suited for reliable task queues and routing."
+  },
+  {
+    "heading": "MongoDB",
+    "question": "Why did you choose MongoDB?",
+    "answer": "## Reason\nDifferent AI model families had different metadata structures.\n\n## Why MongoDB?\n- Flexible schema\n- Document-oriented\n- Easier support for BYOM, LoRA, Foundation Models and TSFM.\n\n## Source of Truth\nMongoDB remained the primary persistent datastore."
+  },
+  {
+    "heading": "Redis",
+    "question": "Why did you use Redis?",
+    "answer": "## Purpose\nImprove read performance.\n\n## Cached Data\n- Deployment status\n- Validation status\n- Frequently accessed metadata\n\n## Why Redis?\n- In-memory storage\n- Low latency\n- High throughput\n\n## Source of Truth\nMongoDB remained the source of truth."
+  },
+  {
+    "heading": "ETCD to Redis Migration",
+    "question": "How did you migrate from ETCD to Redis without downtime?",
+    "answer": "## Strategy\n1. Introduced Redis alongside ETCD.\n2. Implemented dual writes.\n3. Continued reading from ETCD.\n4. Verified Redis consistency.\n5. Gradually shifted reads to Redis using feature flags.\n6. Removed ETCD after successful validation.\n\n## Rollback\nReads could be redirected back to ETCD during migration.\n\n## Why?\nEnabled zero-downtime migration with rollback capability."
+  },
+  {
+    "heading": "Redis Cache TTL",
+    "question": "How did you handle Redis TTL and stale data?",
+    "answer": "## Strategy\nUsed Cache-Aside pattern with explicit cache invalidation.\n\n## Implementation\n- Update MongoDB.\n- Refresh or invalidate Redis entry.\n- TTL acted as a fallback, not the primary consistency mechanism.\n\n## Stale Data\nIf Redis update failed, MongoDB remained the source of truth and cache was refreshed after TTL expiry or retry.\n\n## Trade-off\nTTL alone is insufficient for frequently changing deployment status."
+  },
+  {
+    "heading": "Caching Strategies",
+    "question": "What caching strategies do you know and which one did you use?",
+    "answer": "## Cache-Aside (Used)\nApplication checks cache first and loads data from DB on cache miss.\n\n## Write-Through\nWrites go to cache and database together.\n\n## Write-Behind\nWrites go to cache first and database asynchronously.\n\n## Refresh-Ahead\nBackground refresh before TTL expiry.\n\n## My Project\nUsed Cache-Aside with explicit cache invalidation because MongoDB was the source of truth."
+  },
+  {
+    "heading": "Redis Failure",
+    "question": "What happens if Redis goes down?",
+    "answer": "## Behavior\nRedis was an optimization layer, not the source of truth.\n\n## Recovery\n- Read from MongoDB.\n- Increased latency but no data loss.\n- Cache rebuilt after Redis recovery.\n\n## High Availability\nRedis replication and Sentinel/managed services can provide failover."
+  },
+  {
+    "heading": "Kubernetes",
+    "question": "How was Kubernetes used in your project?",
+    "answer": "## Responsibilities\n- Deploy containers\n- Rolling updates\n- Health checks\n- Auto healing\n- Scaling\n\n## Deployment Flow\nCI/CD built Docker image, pushed it to registry and Kubernetes deployed it.\n\n## Health Checks\n- Liveness Probe\n- Readiness Probe"
+  },
+  {
+    "heading": "Docker",
+    "question": "Explain your Docker deployment strategy.",
+    "answer": "## Flow\n- Build Docker image.\n- Push image to registry.\n- Kubernetes pulls image.\n- Pod starts container.\n\n## Benefit\nEnsures consistent runtime across environments."
+  },
+  {
+    "heading": "Go FVT Framework",
+    "question": "What was your Go-based FVT framework?",
+    "answer": "## Purpose\nValidate complete AI model lifecycle before production releases.\n\n## Validation\n- Model onboarding\n- Deployment\n- Inference\n- Cleanup\n\n## Why Go?\n- Goroutines\n- Lightweight concurrency\n- Fast execution\n- Low memory footprint"
+  },
+  {
+    "heading": "OpenTelemetry & Instana",
+    "question": "How did you monitor microservices?",
+    "answer": "## OpenTelemetry\nCollected traces, metrics and logs.\n\n## Instana\nVisualized request latency, service dependencies, bottlenecks and failures.\n\n## Benefit\nEnabled distributed tracing using a common Trace ID."
+  },
+  {
+    "heading": "Architecture Contribution",
+    "question": "Did you contribute to architecture or design discussions?",
+    "answer": "## Contribution\nParticipated in HLD and LLD discussions.\n\n## Areas\n- Redis migration\n- Kafka event flow\n- Service interactions\n- Validation workflow\n- Observability\n\n## Example\nHelped design phased ETCD to Redis migration with dual-write strategy and rollback support."
+  },
+  {
+    "heading": "Production Issue",
+    "question": "Describe a production issue you solved.",
+    "answer": "## Problem\nDeployment status API experienced high read latency.\n\n## Investigation\nUsed Instana traces to identify repeated ETCD reads.\n\n## Solution\nIntroduced Redis caching with cache-aside and explicit invalidation.\n\n## Result\nReduced read latency and improved throughput."
+  },
+  {
+    "heading": "Spring Boot Layered Architecture",
+    "question": "Where should request validation happen in Spring Boot?",
+    "answer": "## Controller\n- Validate request structure using @Valid.\n- Validate email format, required fields, field lengths.\n\n## Service\n- Business validations.\n- Check duplicate email/username.\n- Business rules.\n\n## Repository\n- Database interactions only.\n\n## Principle\nKeep controllers thin and business logic inside services."
+  },
+  {
+    "heading": "Spring Boot User Creation",
+    "question": "How would you improve the user creation code that fetches all emails and usernames?",
+    "answer": "## Problems\n- Loads all emails/usernames into memory.\n- O(n) search using contains().\n- Poor scalability.\n- Race conditions.\n\n## Better Solution\nUse repository methods:\n- existsByEmail(email)\n- existsByUsername(username)\n\n## Database\nAdd UNIQUE constraints on email and username.\n\n## Benefit\nIndexed lookup, better performance and protection against concurrent inserts."
+  },
+  {
+    "heading": "Race Condition",
+    "question": "How do you prevent duplicate users during concurrent requests?",
+    "answer": "## Problem\nTwo requests may both pass application-level validation simultaneously.\n\n## Solution\n- Check existsByEmail().\n- Enforce UNIQUE constraints in database.\n- Catch DuplicateKeyException/DataIntegrityViolationException.\n\n## Why?\nDatabase constraints are the ultimate source of consistency."
+  },
+  {
+    "heading": "Global Exception Handling",
+    "question": "How should exceptions be handled in Spring Boot?",
+    "answer": "## Recommended Approach\nUse @RestControllerAdvice with @ExceptionHandler.\n\n## Why?\n- Centralized exception handling.\n- Cleaner controllers.\n- Consistent API responses.\n\n## Avoid\nLarge try-catch blocks inside controllers."
+  },
+  {
+    "heading": "Controller vs Service Validation",
+    "question": "Why shouldn’t duplicate email validation happen in the controller?",
+    "answer": "## Controller\nValidates request format only.\n\n## Service\nPerforms business validation requiring database access.\n\n## Reason\nMaintains separation of concerns and improves reusability."
+  },
+  {
+    "heading": "Kafka vs REST",
+    "question": "Why did you choose Kafka instead of synchronous REST between services?",
+    "answer": "## REST\n- Tight coupling\n- Caller waits for response\n- Harder to scale\n\n## Kafka\n- Asynchronous\n- Durable events\n- Retry support\n- Independent scaling\n\n## My Project\nModel deployment is long-running, making asynchronous communication a better choice."
+  }
+]
